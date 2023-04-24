@@ -21,6 +21,8 @@ import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
+import Alert from '@mui/material/Alert';
+
 
 // ** Icons Imports
 import Google from 'mdi-material-ui/Google'
@@ -38,6 +40,8 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
+import { route } from 'next/dist/server/router'
+import { Stack } from '@mui/material'
 
 interface State {
   password: string
@@ -72,6 +76,7 @@ const LoginPage = () => {
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
+  const [error, setError] = useState<boolean>(false);
 
   const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -85,9 +90,33 @@ const LoginPage = () => {
     event.preventDefault()
   }
 
+// gpt sugestion
+  const handlesubmit = () => {
+
+    // Validar campo de correo electrónico
+    if (!values.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      console.log('El correo electrónico es inválido');
+        setError(true)
+        return
+    }
+
+    // Validar campo de contraseña
+    if (!values.password) {
+      console.log('La contraseña no puede estar vacía');
+      setError(true)
+      return
+    }
+
+    setError(false)
+    // Si ambos campos son válidos, realizar acción deseada
+    console.log('Correo electrónico:', values.email);
+    console.log('Contraseña:', values.password);
+    
+  };
+  
   return (
     <Box className='content-center'>
-      <Card sx={{ zIndex: 1 }}>
+      <Card sx={{ zIndex: 1 }}>    
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
           <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg
@@ -168,8 +197,12 @@ const LoginPage = () => {
             </Typography>
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
+            {error? 
+              <Alert sx={{ marginBottom: 4 }} severity="error">Las credenciales son incorrectas</Alert>
+              :null
+            }
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+          <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} value={values.email} onChange={handleChange('email')}/>
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
