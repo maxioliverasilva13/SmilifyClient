@@ -44,6 +44,7 @@ import { route } from 'next/dist/server/router'
 import { Stack } from '@mui/material'
 
 interface State {
+  email: string
   password: string
   showPassword: boolean
 }
@@ -69,6 +70,7 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 const LoginPage = () => {
   // ** State
   const [values, setValues] = useState<State>({
+    email: '',
     password: '',
     showPassword: false
   })
