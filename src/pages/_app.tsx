@@ -3,7 +3,8 @@ import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
-
+import { Provider } from "react-redux";
+import store from "../store/store"
 // ** Loader Import
 import NProgress from 'nprogress'
 
@@ -59,6 +60,8 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
+    <Provider store={store}>
+
     <CacheProvider value={emotionCache}>
       <Head>
         <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
@@ -78,6 +81,7 @@ const App = (props: ExtendedAppProps) => {
         </SettingsConsumer>
       </SettingsProvider>
     </CacheProvider>
+    </Provider>
   )
 }
 
