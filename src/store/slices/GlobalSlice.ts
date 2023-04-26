@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 
 const initialState: any = {
   userInfo: null,
+  loading: false,
+  loginError: false,
 };
 
 export const GlobalSlice = createSlice({
@@ -11,6 +13,12 @@ export const GlobalSlice = createSlice({
   reducers: {
     setUserInfo(state, { payload }) {
       state.userInfo = payload;
+    },
+    setLoading(state, { payload }) {
+      state.loading = payload;
+    },
+    setLoginError(state, { payload }) {
+      state.loginError = payload;
     },
   },
   extraReducers: {},
@@ -23,7 +31,17 @@ export const useGlobalActions = () => {
     dispatch(GlobalSlice.actions.setUserInfo(userInfo));
   };
 
+  const handleChangeLoading = (val: boolean) => {
+    dispatch(GlobalSlice.actions.setLoading(val));
+  };
+
+  const handleChangeLoginError = (val: boolean) => {
+    dispatch(GlobalSlice.actions.setLoginError(val));
+  };
+
   return {
+    handleChangeLoading,
+    handleChangeLoginError,
     handleSetUserInfo,
   };
 };

@@ -30,6 +30,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import CheckAuthWrapper from 'src/components/CheckAuthWrapper/CheckAuthWrapper';
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -63,6 +64,7 @@ const App = (props: ExtendedAppProps) => {
     <Provider store={store}>
 
     <CacheProvider value={emotionCache}>
+
       <Head>
         <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
         <meta
@@ -71,8 +73,9 @@ const App = (props: ExtendedAppProps) => {
         />
         <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
+        <script src="https://cdn.tailwindcss.com"></script>
       </Head>
-
+      <CheckAuthWrapper>
       <SettingsProvider>
         <SettingsConsumer>
           {({ settings }) => {
@@ -80,6 +83,7 @@ const App = (props: ExtendedAppProps) => {
           }}
         </SettingsConsumer>
       </SettingsProvider>
+      </CheckAuthWrapper>
     </CacheProvider>
     </Provider>
   )

@@ -1,8 +1,6 @@
 const apiRoutes = {
-    signIn: () => "/api/auth/signIn",
-    activate: () => "/api/auth/activate",
-    signUp: () => "/api/auth/signUp",
-    me: () => "/api/auth/me",
+    signIn: () => "/authentication/login",
+    currentUser: () => "/authentication/current_user",
 }
 
 export default apiRoutes;
