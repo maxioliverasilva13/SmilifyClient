@@ -42,6 +42,10 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 import { route } from 'next/dist/server/router'
 import { Stack } from '@mui/material'
+import { useSignInMutation } from 'src/store/services/UserService'
+import { storageToken } from 'src/utils/prepareHeaders'
+import appRoutes from 'src/utils/appRoutes'
+import useGlobal from 'src/hooks/useGlobal'
 
 interface State {
   email: string
@@ -78,7 +82,9 @@ const LoginPage = () => {
   // ** Hook
   const theme = useTheme()
   const router = useRouter()
-  const [error, setError] = useState<boolean>(false);
+  const [signIn, {isLoading: isLoadingSignIn}] = useSignInMutation();
+
+  const { handleChangeLoading, handleChangeLoginError, loginError } = useGlobal();
 
   const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
     setValues({ ...values, [prop]: event.target.value })
@@ -93,27 +99,36 @@ const LoginPage = () => {
   }
 
 // gpt sugestion
-  const handleSubmit = () => {
-
+  const handleSubmit = async () => {
     // Validar campo de correo electrónico
     if (!values.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
       console.log('El correo electrónico es inválido');
-        setError(true)
+        handleChangeLoginError(true)
         return
     }
 
     // Validar campo de contraseña
     if (!values.password) {
       console.log('La contraseña no puede estar vacía');
-      setError(true)
+      handleChangeLoginError(true)
       return
     }
-
-    setError(false)
-    // Si ambos campos son válidos, realizar acción deseada
-    console.log('Correo electrónico:', values.email);
-    console.log('Contraseña:', values.password);
-    
+    handleChangeLoginError(false)
+    handleChangeLoading(true);
+    const response: any = await signIn({
+      email: values.email,
+      password: values.password,
+    });
+    if (response?.data?.result) {
+      storageToken(response?.data?.result);
+      window.location.pathname = appRoutes.index();
+      // router.push(appRoutes.index());
+      // response?.data?.result
+    } else {
+      handleChangeLoginError(true);
+    }
+    handleChangeLoading(false);
+    return ;
   };
   
   return (
@@ -126,7 +141,7 @@ const LoginPage = () => {
             </Typography>
             <Typography variant='body2'>Ingresa tus credenciales para iniciar sesion</Typography>
           </Box>
-            {error? 
+            {loginError? 
               <Alert sx={{ marginBottom: 4 }} severity="error">Las credenciales son incorrectas</Alert>
               :null
             }
