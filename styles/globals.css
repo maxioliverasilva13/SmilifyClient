@@ -22,3 +22,21 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+
+
+/* .tablePacientes */
+
+
+.row {
+ padding-top: 10px;
+ padding-bottom: 10px;
+ border-bottom: 1px solid #BEBEBE;
+}
+
+
+.tablePacientes title {
+  font-size: 18px;
+  font-weight: normal;
+  color: #514D59;
+}

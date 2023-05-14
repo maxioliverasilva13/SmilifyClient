@@ -91,9 +91,6 @@ const VerticalLayout = (props: LayoutProps) => {
             {children}
           </ContentWrapper>
 
-          {/* Footer Component */}
-          <Footer {...props} />
-
           {/* Portal for React Datepicker */}
           <DatePickerWrapper sx={{ zIndex: 11 }}>
             <Box id='react-datepicker-portal'></Box>
@@ -102,7 +99,7 @@ const VerticalLayout = (props: LayoutProps) => {
       </VerticalLayoutWrapper>
 
       {/* Scroll to top button */}
-      {scrollToTop ? (
+      {/* {scrollToTop ? (
         scrollToTop(props)
       ) : (
         <ScrollToTop className='mui-fixed'>
@@ -110,7 +107,7 @@ const VerticalLayout = (props: LayoutProps) => {
             <ArrowUp />
           </Fab>
         </ScrollToTop>
-      )}
+      )} */}
     </>
   )
 }

@@ -9,6 +9,10 @@ import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
+import Users from 'mdi-material-ui/AccountGroup'
+import ToolTipPlus from 'mdi-material-ui/ToolTipPlus'
+import FormatListBulleted from 'mdi-material-ui/FormatListBulleted'
+
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -21,59 +25,36 @@ const navigation = (): VerticalNavItemsType => {
       path: '/'
     },
     {
-      title: 'Account Settings',
+      title: 'Agenda',
       icon: AccountCogOutline,
-      path: '/account-settings'
+      path: '/agenda'
     },
     {
-      sectionTitle: 'Pages'
+      sectionTitle: 'Pacientes'
     },
     {
-      title: 'Login',
-      icon: Login,
-      path: '/pages/login',
-      openInNewTab: true
+      title: 'Pacientes',
+      icon: Users,
+      path: '/pacientes',
     },
     {
-      title: 'Register',
-      icon: AccountPlusOutline,
-      path: '/pages/register',
-      openInNewTab: true
+      title: 'Agregar',
+      icon: ToolTipPlus,
+      path: '/addPaciente',
     },
     {
-      title: 'Error',
-      icon: AlertCircleOutline,
-      path: '/pages/error',
-      openInNewTab: true
+      sectionTitle: 'Aranceles'
     },
     {
-      sectionTitle: 'User Interface'
+      title: 'Listado',
+      icon: FormatListBulleted,
+      path: '/aranceles'
     },
     {
-      title: 'Typography',
-      icon: FormatLetterCase,
-      path: '/typography'
+      title: 'Agregar',
+      path: '/addArancel',
+      icon: ToolTipPlus
     },
-    {
-      title: 'Icons',
-      path: '/icons',
-      icon: GoogleCirclesExtended
-    },
-    {
-      title: 'Cards',
-      icon: CreditCardOutline,
-      path: '/cards'
-    },
-    {
-      title: 'Tables',
-      icon: Table,
-      path: '/tables'
-    },
-    {
-      icon: CubeOutline,
-      title: 'Form Layouts',
-      path: '/form-layouts'
-    }
   ]
 }
 
