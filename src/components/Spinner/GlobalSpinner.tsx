@@ -2,7 +2,7 @@ import BounceLoader from "react-spinners/BounceLoader";
 
 
 const GlobalSpinner = () => {
-    return <div className="w-full h-full flex items-center justify-center bg-white z-[50] absolute inset-0 m-auto">
+    return <div className="w-full h-full flex items-center justify-center bg-opacity-50 bg-black z-[50] absolute inset-0 m-auto">
     <BounceLoader
         color={"#46b3a6"}
         loading={true}

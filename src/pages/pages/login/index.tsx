@@ -99,7 +99,8 @@ const LoginPage = () => {
   }
 
 // gpt sugestion
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
+    e?.preventDefault();
     // Validar campo de correo electrónico
     if (!values.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
       console.log('El correo electrónico es inválido');
@@ -145,7 +146,7 @@ const LoginPage = () => {
               <Alert sx={{ marginBottom: 4 }} severity="error">Las credenciales son incorrectas</Alert>
               :null
             }
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+          <form noValidate autoComplete='off' onSubmit={handleSubmit}>
           <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} value={values.email} onChange={handleChange('email')}/>
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
@@ -178,11 +179,11 @@ const LoginPage = () => {
               </Link>
             </Box>
             <Button
+              type="submit"
               fullWidth
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-              onClick={handleSubmit}
             >
               Iniciar Sesion
             </Button>

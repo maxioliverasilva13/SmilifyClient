@@ -2,8 +2,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import apiRoutes from "../../utils/apiRoutes";
 import { prepareHeaders } from "../../utils/prepareHeaders";
 
-const baseUrl = "http://localhost:8080/Smilify-1.0/resources";
-
 const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:8080/Smilify-1.0/resources",
   prepareHeaders,
