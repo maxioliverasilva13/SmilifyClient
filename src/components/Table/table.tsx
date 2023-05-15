@@ -55,7 +55,7 @@ const Table = ({ cols, values }: Props) => {
                   )}
                 >
                   {col?.key === "historialClinicoLink" ? (
-                    <a href="#" className="decoration-none text-[#]">
+                    <a href="#" className="decoration-none text-[#84DCCC]">
                       Historia Clinica
                     </a>
                   ) : (
