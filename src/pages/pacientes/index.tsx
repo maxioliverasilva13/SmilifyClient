@@ -4,6 +4,9 @@ import Filter from "mdi-material-ui/FilterVariant";
 import { useGetPacientesQuery } from "src/store/services/PacienteService";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import { getToken } from "src/utils/prepareHeaders";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import appRoutes from "src/utils/appRoutes";
 
 const cols: any = [
   {
@@ -31,22 +34,32 @@ const cols: any = [
 
 const Pacientes = () => {
   const { data: pacientes, isLoading } = useGetPacientesQuery({});
+  const [query, setQuery] = useState("");
+  const [filterData, setFilterData] = useState<any>([]);
+  const { push } = useRouter();
 
-    // const handleGetPacientes = async () => {
-    //     const response = await fetch("http://localhost:8080/Smilify-1.0/resources/entities.paciente", {
-    //         method: "GET",
-    //         headers: {
-    //             "Authorization": getToken(),
-    //         }
-    //     })
-    //     const data = await response.json()
-    //     console.log(data)
-    // }
+  useEffect(() => {
+    if (query) {
+      const results = pacientes?.filter((item) => {
+        return item?.apellido?.includes(query) ||
+          item?.nombre?.includes(query) ||
+          item?.correo?.includes(query) ||
+          item?.direccion?.includes(query) ||
+          item?.telefono?.toString()?.includes(query);
+      });
+      setFilterData(results);
+    }
+  }, [query]);
 
-    // handleGetPacientes();
+  const dataToUse = query ? filterData : pacientes;
 
   if (isLoading) {
     return <GlobalSpinner />;
+  }
+
+  const handleGoingToPacientePage = (data: any) => {
+    const id = data?.id;
+    push(appRoutes.pacientePage(id))
   }
 
   return (
@@ -60,6 +73,8 @@ const Pacientes = () => {
             <div className="overflow-hidden flex flex-row items-center justify-start gap-1 border-[0.5px] border-[#A8A8A8] px-4 py-2 rounded-full h-[40px] w-[240px] ">
               <SearchIcon />
               <input
+                value={query}
+                onChange={(e) => setQuery(e?.target?.value)}
                 className="bg-transparent text-[#A8A8A8] outline-none"
                 placeholder="Search..."
               />
@@ -68,7 +83,7 @@ const Pacientes = () => {
           <Filter className="cursor-pointer" />
         </div>
 
-        <Table cols={cols} values={pacientes} />
+        <Table customClick={handleGoingToPacientePage} cols={cols} values={dataToUse} />
       </div>
     </div>
   );
