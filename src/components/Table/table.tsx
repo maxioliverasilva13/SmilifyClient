@@ -27,6 +27,7 @@ const Table = ({ cols, values }: Props) => {
           {cols?.map((item: ColItem, index: number) => {
             return (
               <div
+                key={index}
                 className={clsx(
                   "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
                   item?.customWidth &&
@@ -45,10 +46,11 @@ const Table = ({ cols, values }: Props) => {
       }
       {values ? values?.map((item: any, index: number) => {
         return (
-          <div className="w-full h-auto flex flex-row items-center justify-between row">
-            {cols?.map((col: ColItem) => {
+          <div key={index} className="w-full h-auto flex flex-row items-center justify-between row">
+            {cols?.map((col: ColItem, index: number) => {
               return (
                 <div
+                  key={index}
                   className={clsx(
                     "w-full max-w-full truncate flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
                     col?.customWidth && `w-[${col?.customWidth}]`

@@ -75,7 +75,7 @@ const App = (props: ExtendedAppProps) => {
         <meta name='viewport' content='initial-scale=1, width=device-width' />
         <script src="https://cdn.tailwindcss.com"></script>
       </Head>
-      <CheckAuthWrapper>
+      {/* <CheckAuthWrapper> */}
       <SettingsProvider>
         <SettingsConsumer>
           {({ settings }) => {
@@ -83,7 +83,7 @@ const App = (props: ExtendedAppProps) => {
           }}
         </SettingsConsumer>
       </SettingsProvider>
-      </CheckAuthWrapper>
+      {/* </CheckAuthWrapper> */}
     </CacheProvider>
     </Provider>
   )
