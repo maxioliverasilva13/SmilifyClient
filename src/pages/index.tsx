@@ -11,6 +11,10 @@ import ReservasTable from "src/components/Table/reservasTable";
 import { useGetReservasQuery } from "src/store/services/ReservaService";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 
+import { useEffect, useState } from "react";
+import { useGetArchivosByPacienteIdQuery, useCreateArchivoMutation } from "src/store/services/FileService"; 
+import useGlobal from "src/hooks/useGlobal";
+
 const cols: any = [
   {
     key: "nombre",
@@ -32,6 +36,11 @@ const cols: any = [
 
 const Dashboard = () => {
   const { data: reservas, isLoading } = useGetReservasQuery({});
+
+  // const { userInfo } = useGlobal();
+  // const { data = [] } = useGetArchivosByPacienteIdQuery(0);
+  // const { isLoading } = useGetArchivosByPacienteIdQuery(userInfo?.id);
+
 
   if (isLoading) {
     return <GlobalSpinner />;
