@@ -98,20 +98,6 @@ export default function BasicModal() {
         })
         )
 
-        //if (response?.status?.code === 200) {
-        //    // Mostrar mensaje de éxito
-        //    setAccepted(true);
-        //  } else {
-        //    // Mostrar mensaje de error
-        //    setNotAccepted(true);
-        //  }
-
-        //handleChangeLoading(false);
-        //push(appRoutes.index());
-        //if (response?.status?.code === 200) {
-        //    handleChangeLoading(false);
-        //    push(appRoutes.index())
-        //}
     }
 
     useEffect(()=>{
@@ -132,6 +118,10 @@ export default function BasicModal() {
             setNotAccepted(true);
             console.log('Notaccepted')
           }
+    }
+
+    function Redireccion() {
+        push(appRoutes.index());
     }
 
     return (
@@ -177,7 +167,7 @@ export default function BasicModal() {
                     </div >
                     <div className='h-2/6 flex flex-col items-center justify-center'>
                         {Accepted ?
-                            <Alert sx={{ marginBottom: 4 }} severity="success">Agregado Coorectamente, presione aqui para volver al inicio</Alert>
+                            <Alert sx={{ marginBottom: 4 }} severity="success" onClick={Redireccion}>Agregado Coorectamente, presione aqui para volver al inicio</Alert>
                             :null
                         }
                         {NotAccepted ?
