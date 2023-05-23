@@ -4,6 +4,8 @@ const appRoutes = {
   index: () => "/",
   pacientePage: (id: any) => "/pacientes/" + id,
   pacientes: () => "/pacientes",
+  addArancelPublico: () => "/Arancel/AddArancel/AddArancelPublico",
+  addArancelCooperativa: () => "/Arancel/AddArancel/AddArancelCooperativa",
 };
 
 export default appRoutes;

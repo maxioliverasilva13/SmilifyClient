@@ -14,6 +14,7 @@ import ToolTipPlus from 'mdi-material-ui/ToolTipPlus'
 import FormatListBulleted from 'mdi-material-ui/FormatListBulleted'
 
 
+
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
 
@@ -52,10 +53,11 @@ const navigation = (): VerticalNavItemsType => {
     },
     {
       title: 'Agregar',
-      path: '/addArancel',
-      icon: ToolTipPlus
+      path: '/Modal/ModalConsultaAgregar',
+      icon: ToolTipPlus,
     },
   ]
+
 }
 
 export default navigation
