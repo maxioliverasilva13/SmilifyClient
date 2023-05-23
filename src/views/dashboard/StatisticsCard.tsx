@@ -12,11 +12,11 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
 // ** Icons Imports
-import TrendingUp from 'mdi-material-ui/TrendingUp'
+import StarOutline from 'mdi-material-ui/StarOutline'
 import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
 import DotsVertical from 'mdi-material-ui/DotsVertical'
-import CellphoneLink from 'mdi-material-ui/CellphoneLink'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
+import FormatListBulleted from 'mdi-material-ui/FormatListBulleted'
 
 // ** Types
 import { ThemeColor } from 'src/@core/layouts/types'
@@ -33,19 +33,19 @@ const salesData: DataType[] = [
     stats: '245k',
     title: 'Sales',
     color: 'primary',
-    icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
+    icon: <StarOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
     stats: '12.5k',
     title: 'Customers',
     color: 'success',
-    icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
+    icon: <FormatListBulleted sx={{ fontSize: '1.75rem' }} />
   },
   {
     stats: '1.54k',
     color: 'warning',
     title: 'Products',
-    icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
+    icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
     stats: '$88k',
