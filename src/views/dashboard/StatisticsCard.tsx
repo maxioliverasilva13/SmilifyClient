@@ -30,27 +30,27 @@ interface DataType {
 
 const salesData: DataType[] = [
   {
-    stats: '245k',
-    title: 'Sales',
-    color: 'primary',
+    stats: '23',
+    title: 'Pacientes Atendidos',
+    color: 'warning',
     icon: <StarOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
     stats: '12.5k',
-    title: 'Customers',
-    color: 'success',
+    title: 'Tratamientos Iniciados',
+    color: 'primary',
     icon: <FormatListBulleted sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '1.54k',
-    color: 'warning',
-    title: 'Products',
+    stats: '13',
+    color: 'success',
+    title: 'Pacientes Nuevos',
     icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
     stats: '$88k',
     color: 'info',
-    title: 'Revenue',
+    title: 'Ingresos Totales',
     icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
   }
 ]
@@ -91,14 +91,14 @@ const StatisticsCard = () => {
             <DotsVertical />
           </IconButton>
         }
-        subheader={
-          <Typography variant='body2'>
-            <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              Total 48.5% growth
-            </Box>{' '}
-            😎 this month
-          </Typography>
-        }
+        // subheader={
+        //   <Typography variant='body2'>
+        //     <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
+        //       Total 48.5% growth
+        //     </Box>{' '}
+        //     😎 this month
+        //   </Typography>
+        // }
         titleTypographyProps={{
           sx: {
             mb: 2.5,
