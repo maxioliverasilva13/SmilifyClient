@@ -10,9 +10,10 @@ type ColItem = {
 interface Props {
   cols: ColItem[];
   values?: Reserva[];
+  onlyDiarias?: Boolean;
 }
 
-const ReservasTable = ({ cols, values }: Props) => {
+const ReservasTable = ({ cols, values, onlyDiarias }: Props) => {
   const renderNoResults = () => {
     <div className="w-full h-full flex-grow flex items-center justify-center ">
       <span className="text-[#514D59] font-medium">
@@ -25,7 +26,7 @@ const ReservasTable = ({ cols, values }: Props) => {
     switch (col?.key) {
       case "nombre":
         return (
-          <span className="text-center m-auto">{value.paciente?.nombre}</span>
+          <span className="text-center m-auto">{value.paciente?.nombre + " " + value.paciente?.apellido}</span>
         );
       case "correo":
         return (
@@ -35,10 +36,27 @@ const ReservasTable = ({ cols, values }: Props) => {
         return (
           <span className="text-center m-auto">{value.paciente?.telefono}</span>
         );
+      case "fecha":
+        return (
+          <span className="text-center m-auto">
+            {getProperDate(value[col?.key])?.toLocaleDateString("es-UY")}
+          </span>
+        );
+      case "hora":
+        return (
+          <span className="text-center m-auto">
+            {getProperDate(value["fecha"])?.toLocaleTimeString("es-UY")}
+          </span>
+        );
       default:
         return <span className="text-center m-auto">{value[col?.key]}</span>;
     }
   };
+
+  function getProperDate(date: Number) {
+    if (date == null) return null;
+    return new Date(parseInt(date.toString(6)));
+  }
 
   return (
     <div className="w-full h-auto flex flex-col items-start justify-start">
@@ -86,11 +104,17 @@ const ReservasTable = ({ cols, values }: Props) => {
                 })}
                 <div className="flex w-3/4 gap-6">
                   <a href="#" className="decoration-none text-[#84DCCC]">
-                    Aceptar
+                    {onlyDiarias ? "Cancelar" : "Aceptar"}
                   </a>
-                  <a href="#" className="decoration-none text-[#84DCCC]">
-                    Modificar
-                  </a>
+                  {!onlyDiarias ? (
+                    <a href="#" className="decoration-none text-[#84DCCC]">
+                      Modificar
+                    </a>
+                  ) : (
+                    <a href="#" className="decoration-none uppercase text-[#84DCCC]">
+                      Iniciar Consulta
+                    </a>
+                  )}
                 </div>
               </div>
             );
