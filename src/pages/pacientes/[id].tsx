@@ -3,6 +3,8 @@ import Pencil from "mdi-material-ui/Pencil";
 import Table from "src/components/Table/table";
 import { useEffect, useState } from "react";
 import HistorialClinicoTable from "src/components/HistorialClinicoTable/HistorialClinicoTable";
+import OdontoGrama from "src/components/Odontograma/Odontograma";
+import { useRouter } from "next/router";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -78,6 +80,9 @@ const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
 
 const PacienteInfo = () => {
   const fechaAlta = "01/01/2020";
+  const router = useRouter();
+  const { id = "" } = router.query;
+  const userId = id as string;
 
   const [itemsToMap, setItemsToMap] = useState<any[]>(historialClilinco);
 
@@ -131,6 +136,7 @@ const PacienteInfo = () => {
         <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
           Odontograma
         </span>
+        <OdontoGrama uid={userId} />
 
         <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
           Historial de consultas

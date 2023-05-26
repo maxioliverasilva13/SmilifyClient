@@ -10,6 +10,7 @@ import { ArancelPublicoService } from "./services/ArancelPublicoService";
 import { ArancelCooperativoService } from "./services/ArancelCooperativoService";
 import { ReservaService } from "./services/ReservaService";
 import { FileService } from "./services/FileService";
+import { DienteService } from "./services/DienteService";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,8 @@ const store = configureStore({
    [ArancelCooperativoService.reducerPath]: ArancelCooperativoService.reducer,
    [ReservaService.reducerPath]: ReservaService.reducer,
    [FileService.reducerPath]: FileService.reducer,
+   [DienteService.reducerPath]: DienteService.reducer,
+   
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware().concat(
@@ -31,6 +34,7 @@ const store = configureStore({
         ArancelCooperativoService.middleware,
         ReservaService.middleware,
         FileService.middleware,
+        DienteService.middleware,
     ),
 });
 

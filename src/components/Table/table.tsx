@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Loader from "../Loader/Loader";
 
 type ColItem = {
   key: string;
@@ -10,21 +11,20 @@ interface Props {
   cols: ColItem[];
   values?: any[];
   customClick: Function,
+  isLoading?: boolean,
 }
 
-const Table = ({ cols, values, customClick }: Props) => {
+const Table = ({ cols, values, customClick, isLoading = false }: Props) => {
   const renderNoResults = () => {
     return (<div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
       <span className="text-[#514D59] font-medium py-8">No se encontraron resultados</span>
     </div>)
   }
 
-  console.log(values && values?.length > 0 )
-
   return (
-    <div className="w-full h-auto flex flex-col items-start justify-start">
+    <div className="w-full h-auto flex relative flex-col items-start justify-start">
       {
-        <div className="w-full h-auto flex flex-row items-center justify-between row">
+        <div className="w-full h-auto sticky top-0 flex flex-row items-center justify-between row">
           {cols?.map((item: ColItem, index: number) => {
             return (
               <div
@@ -45,7 +45,9 @@ const Table = ({ cols, values, customClick }: Props) => {
           })}
         </div>
       }
-      {values && values?.length > 0 ? values?.map((item: any, index: number) => {
+      {
+      isLoading ? <Loader /> : 
+      values && values?.length > 0 ? values?.map((item: any, index: number) => {
         return (
           <div key={index} className="w-full h-auto flex flex-row items-center justify-between row">
             {cols?.map((col: ColItem, index: number) => {
@@ -63,7 +65,7 @@ const Table = ({ cols, values, customClick }: Props) => {
                       Historia Clinica
                     </a>
                   ) : (
-                    <span className="text-center m-auto">{item[col?.key] || "-"}</span>
+                    <span className="text-center m-auto max-w-full truncate">{item[col?.key] || "-"}</span>
                   )}
                 </div>
               );

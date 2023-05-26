@@ -8,6 +8,8 @@ const apiRoutes = {
     getReservas: () => "/entities.reserva",
     uploadFile: () => "/entities.archivo/createArchivo",
     getArchivosByPacienteId: () => "/entities.archivo/getArchivosByPacienteId/",
+    getInfoDiente: () => "/entities.dienteinfo/getInfoDiente",
+    createDienteInfo: () => "/entities.dienteinfo",
 }
 
 export default apiRoutes;

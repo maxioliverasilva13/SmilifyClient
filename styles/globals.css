@@ -40,3 +40,167 @@ code[class*='language-'] {
   font-weight: normal;
   color: #514D59;
 }
+
+.trapecio {
+  width: 99%;
+  height: 0px;
+  border-right: 9.5px solid transparent;
+  border-left: 9.5px solid transparent;
+  border-bottom: 9.5px solid white;
+}
+
+.trapecio.active {
+  border-bottom: 9.5px solid #d97777!important;
+}
+
+.trapecio:hover {
+  width: 99%;
+  height: 0px;
+  border-right: 9.5px solid transparent;
+  border-left: 9.5px solid transparent;
+  border-bottom: 9.5px solid #d97777;
+}
+.centerItem {
+  position: absolute;
+  width:32px;
+  height: 32px;
+  background:white;
+  top:0px;
+  left: 0px;
+  right: 0px;
+  bottom:0px;
+  margin: auto;
+  z-index: 30;
+  border: 1.5px solid #8F8F8F;
+  border-radius: 3px;
+}
+
+.centerItem.active {
+  background: #d97777!important;
+}
+
+.centerItem:hover {
+  background: #d97777;
+}
+
+.trapecioLeft {
+  z-index:20;
+  transform: rotate(90deg);
+  position: absolute;
+  left: -20px;
+  top: 19.5px;
+}
+
+.trapecioRight {
+  z-index:20;
+  transform: rotate(-90deg);
+  position: absolute;
+  right: -20.2px;
+  top: 19.5px;
+}
+
+
+.trapecioTop {
+  z-index:19;
+  transform: rotate(180deg);
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%!important;
+}
+
+
+.trapecioBottom {
+  z-index:19;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.triangle {
+    width: 99%;
+    height: 0px;
+    border-right: 24px solid transparent;
+    border-left: 24px solid transparent;
+    border-bottom: 23.5px solid white;
+}
+
+.triangle:hover {
+  border-bottom: 23.5px solid #d97777;
+}
+.triangle.active {
+  border-bottom: 23.5px solid #d97777;
+}
+
+.triangleLeft {
+  height: 0px!important;
+  width: 0px!important;
+  border-top: 22.5px solid transparent;
+  border-bottom: 22.5px solid transparent;
+  border-left: 22.5px solid white;
+
+  position: absolute;
+  left: 0px;
+  top: 1.5px;
+  z-index:21!important;
+}
+
+.triangleLeft:hover {
+  border-left: 22.5px solid #d97777;
+}
+.triangleRight:hover {
+  border-right: 22.5px solid #d97777;
+}
+
+.triangleLeft.active {
+  border-left: 22.5px solid #d97777;
+}
+.triangleRight.active {
+  border-right: 22.5px solid #d97777;
+}
+
+
+.triangleRight {
+  height: 0px!important;
+  width: 0px!important;
+  border-top: 22.5px solid transparent;
+  border-bottom: 22.5px solid transparent;
+  border-right: 22.5px solid white;
+  z-index:21!important;
+  position: absolute;
+  right: 0px;
+  top: 1.5px;
+}
+
+.triangleTop {
+  z-index:19!important;
+  transform: rotate(180deg);
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%!important;
+}
+
+
+.triangleBottom {
+  z-index:23!important;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+
+
+@keyframes opacityAppears {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
+
+.appearsAnimation {
+  transition: all .3s ease;
+  animation: opacityAppears .3s ease;
+}
