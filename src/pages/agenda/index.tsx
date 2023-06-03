@@ -1,3 +1,9 @@
+import React from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+
+const localizer = momentLocalizer(moment);
+
 // ** Styled Component Import
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 
@@ -24,6 +30,39 @@ const cols: any = [
   },
 ];
 
+const events = [
+  {
+    id: 1,
+    title: 'Event 1',
+    start: new Date(),
+    end: new Date(moment().add(1, 'hours').toDate()),
+  },
+  {
+    id: 2,
+    title: 'Event 2',
+    start: new Date(moment().add(1, 'day').toDate()),
+    end: new Date(moment().add(1, 'day').add(2, 'hours').toDate()),
+  },
+];
+
+
+const MyCalendar = () => (
+  <div>
+    <Calendar
+      localizer={localizer}
+      events={events}
+      startAccessor="start"
+      endAccessor="end"
+      step={30}
+      popup={true} // Indica si se deben mostrar los eventos en un cuadro emergente
+      popupOffset={{ x: 30, y: 20 }} // Ajusta la posición del cuadro emergente en relación con el evento seleccionado
+      culture="es"
+      
+      style={{ height: 500 }}
+    />
+  </div>
+)
+
 const Agenda = () => {
   const { data: reservas, isLoading } = useGetReservasQuery({});
 
@@ -43,6 +82,9 @@ const Agenda = () => {
             </div>
           </div>
           <ReservasTable cols={cols} values={reservas} onlyDiarias={true} />
+          <div className='w-full flex justify-center my-12'>
+            <MyCalendar />
+          </div>
         </div>
       </div>
     </ApexChartWrapper>
