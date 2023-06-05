@@ -19,6 +19,8 @@ import VerticalAppBarContent from './components/vertical/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useRouter } from 'next/router'
+import appRoutes from 'src/utils/appRoutes'
 
 interface Props {
   children: ReactNode
@@ -37,6 +39,12 @@ const UserLayout = ({ children }: Props) => {
    *  ! Do not change this value unless you know what you are doing. It can break the template.
    */
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+  const { push, pathname } = useRouter(); 
+  const isInPublicPath = pathname === appRoutes.login() || pathname === appRoutes.register();
+
+  if ( isInPublicPath ) {
+    return children;
+  }
 
   return (
     <VerticalLayout
