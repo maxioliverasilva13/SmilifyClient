@@ -21,7 +21,46 @@ export const ReservaService = createApi({
         return response;
       },
     }),
+
+    createReserva: builder.mutation({
+      query: (data) => ({
+        url: `${apiRoutes.postReserva()}`,
+        method: "POST",
+        body: {
+          fecha: data?.fecha,
+          estado: data?.estado,
+          pacienteId: data?.pacienteId
+        },
+      }),
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
+
+    getReservasByUserCedula: builder.query({
+      providesTags: ["Reservas"],
+      query: (dataCedula) => apiRoutes.getReservasByUserCedula(dataCedula),
+      transformResponse(value) {
+        const response = value as boolean; // modificar al type reserva.ts
+        return response;
+      },
+    }),
+
+    getReservasByFecha: builder.query({
+      providesTags: ["Reservas"],
+      query: (data) => apiRoutes.getReservasByFecha(data),
+      transformResponse(value) {
+        const response = value as Reserva[]; // modificar al type reserva.ts
+        return response;
+      },
+    }),
   }),
 });
 
-export const { useGetReservasQuery } = ReservaService;
+export const { 
+  useGetReservasQuery,
+  useCreateReservaMutation,
+  useGetReservasByFechaQuery,
+  useGetReservasByUserCedulaQuery
+} = ReservaService;

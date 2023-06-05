@@ -4,6 +4,7 @@ export type Paciente = {
     apellido: string,
     telefono: number | string,
     correo: string,
-    id: number,
+    cedula: number,
     direccion: string,
+    fechaNacimiento: number | string,
 }
