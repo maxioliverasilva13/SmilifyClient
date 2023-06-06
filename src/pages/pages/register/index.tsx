@@ -76,7 +76,8 @@ const RegisterPage = () => {
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
   const [direccion, setDireccion] = useState('');
-  const [fecha, setFecha] = useState(dayjs());
+  const tomorrow = dayjs().add(1, 'day');
+  const [fecha, setFecha] = useState(tomorrow);
   const [fechaNacimiento, setFechaNacimiento] = useState<Dayjs | null | string>();
   const [hora, setHora] = useState('');
   const { data: data } = useGetPacienteByIdQuery(cedula);
@@ -300,7 +301,7 @@ const RegisterPage = () => {
   }
 
   const filterTimeSlots = () => {
-    const formattedDates = formatDates(); // Suponiendo que la función formatDates devuelve las horas formateadas
+    const formattedDates = formatDates();
 
     const filteredTimeSlots = timeSlots.filter(timeSlot => {
       return !formattedDates.includes(timeSlot);
@@ -362,7 +363,7 @@ const RegisterPage = () => {
                   format='YYYY/MM/DD'
                   value={fecha}
                   disabled={cedula == "0" || cedula == '' || Reserva == true}
-                  shouldDisableDate={isWeekend}
+                  shouldDisableDate={(date) => isWeekend(date) || date.isSame(dayjs(), 'day')}
                   onChange={handleDateChange}
                 />
               </LocalizationProvider>
