@@ -12,6 +12,7 @@ const apiRoutes = {
     getArchivosByPacienteId: () => "/entities.archivo/getArchivosByPacienteId/",
     getInfoDiente: () => "/entities.dienteinfo/getInfoDiente",
     createDienteInfo: () => "/entities.dienteinfo",
+    getAranceles: () => "/entities.arancel",
 }
 
 export default apiRoutes;
