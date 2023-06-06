@@ -1,17 +1,21 @@
+import React from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar"; // @ts-ignore
+import moment from "moment";
+import "moment/locale/es"; // Importa el idioma deseado para moment.js
+
+const localizer = momentLocalizer(moment);
+moment.locale("es");
+
 // ** Styled Component Import
 import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 
-import StatisticsCard from "src/views/dashboard/StatisticsCard";
-
 import ReservasTable from "src/components/Table/reservasTable";
 
-import { useGetReservasQuery } from "src/store/services/ReservaService";
+import { useGetReservasHoyQuery } from "src/store/services/ReservaService";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
+import ConfirmationModal from "src/components/Modals/ConfirmationModal";
 
 import { useEffect, useState } from "react";
-import { useGetArchivosByPacienteIdQuery, useCreateArchivoMutation } from "src/store/services/FileService"; 
-import useGlobal from "src/hooks/useGlobal";
-import { Reserva } from "src/types/reserva";
 
 const cols: any = [
   {
@@ -24,12 +28,59 @@ const cols: any = [
   },
 ];
 
+const customTags = {
+  today: "Hoy",
+  previous: "<",
+  next: ">",
+  month: "Mes",
+  week: "Semana",
+  day: "Día",
+  agenda: "Agenda",
+  date: "Fecha",
+  time: "Hora",
+  event: "Evento",
+  showMore: (total: any) => `Ver más (${total})`,
+};
+
 const Agenda = () => {
-  const { data: reservas, isLoading } = useGetReservasQuery({});
+  const { data: reservas, isLoading } = useGetReservasHoyQuery({});
 
   if (isLoading) {
     return <GlobalSpinner />;
   }
+  const MyCalendar = () => { // El calendar recibe el listado de reservas para el día actual.
+    if (!isLoading) {
+      const fechas = reservas?.map((reserva) => {
+        return new Object({
+          id: reserva.id,
+          title: reserva.paciente.nombre + " " + reserva.paciente.apellido,
+          start: new Date(reserva.fecha),
+          end: moment(new Date(reserva.fecha)).add(30, "minutes").toDate(),
+        });
+      });
+      return (
+        <div>
+          <Calendar
+            localizer={localizer}
+            events={fechas}
+            defaultView="week"
+            // startAccessor="start"
+            // endAccessor="end"
+            step={30}
+            culture="es"
+            // timeslots={2}
+            scrollToTime={moment().hour(8).toDate()}
+            messages={customTags}
+            // onDoubleClickEvent={(event) => {console.log(event)}}
+            onSelectEvent={(event: any) => {
+              console.log(event);
+            }}
+            style={{ height: 600, width: 800 }}
+          />
+        </div>
+      );
+    }
+  };
 
   return (
     <ApexChartWrapper className="flex flex-col gap-7">
@@ -43,6 +94,7 @@ const Agenda = () => {
             </div>
           </div>
           <ReservasTable cols={cols} values={reservas} onlyDiarias={true} />
+          <div className="w-full flex justify-center my-12">{MyCalendar()}</div>
         </div>
       </div>
     </ApexChartWrapper>
