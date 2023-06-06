@@ -20,7 +20,7 @@ const CheckAuthWrapper = ({children}: props) => {
 
     const handleCheckUserTokenAndInfo = () => {
         const token = getToken();
-        if (!token) {
+        if (!token && !isInPublicPath) {
             push(appRoutes.login());
         }
         if (userInfoData) {
@@ -41,8 +41,9 @@ const CheckAuthWrapper = ({children}: props) => {
     }, [userInfoData])
 
     useEffect(() => {
-        if (isError && !loading) {
+        if (isError && !loading && !isInPublicPath) {
             push(appRoutes.login())
+            
         }
     }, [isError, loading])
 

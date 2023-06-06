@@ -1,39 +1,25 @@
 // ** React Imports
-import { useState, Fragment, ChangeEvent, MouseEvent, ReactNode } from 'react'
-
-
-// ** Next Imports
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
-import IconButton from '@mui/material/IconButton'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
-import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
-import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
-import Autocomplete from '@mui/material/Autocomplete';
-import {MenuItem, Select } from '@mui/material/';
+import { MenuItem, Select } from '@mui/material/';
+import Alert from '@mui/material/Alert';
+import Modal from '@mui/material/Modal';
+import appRoutes from "src/utils/appRoutes";
+import { useRouter } from "next/router";
+import CheckCircleOutline from "mdi-material-ui/CheckCircleOutline";
+import CloseCircleOutline from "mdi-material-ui/CloseCircleOutline";
 
-// ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
-import EyeOutline from 'mdi-material-ui/EyeOutline'
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -41,14 +27,14 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 
-interface State {
-  nombre: string
-  telefono: number
-  correo: string
-  hora: string
-  fecha : Dayjs
-  cedula: number
-}
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import React from 'react'
+import dayjs, { Dayjs } from 'dayjs';
+import { useGetPacienteByIdQuery, usePostPacienteMutation } from "src/store/services/PacienteService"
+import { useGetReservasByUserCedulaQuery, useGetReservasByFechaQuery, useCreateReservaMutation } from 'src/store/services/ReservaService'
+import moment from 'moment';
 
 
 // ** Styled Components
@@ -56,232 +42,410 @@ const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
 
-const LinkStyled = styled('a')(({ theme }) => ({
-  fontSize: '0.875rem',
-  textDecoration: 'none',
-  color: theme.palette.primary.main
-}))
-
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  marginTop: theme.spacing(1.5),
-  marginBottom: theme.spacing(4),
-  '& .MuiFormControlLabel-label': {
-    fontSize: '0.875rem',
-    color: theme.palette.text.secondary
-  }
-}))
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import React from 'react'
-import dayjs, { Dayjs } from 'dayjs';
-import Moment from 'react-moment';
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '20%',
+  height: '20%', // Valor de altura deseado
+  bgcolor: 'white',
+  boxShadow: 24,
+  //p: 4,
+  borderRadius: 2,
+  outline: 'none'
+};
 
 
 const RegisterPage = () => {
 
-  // ** States
-  const [values, setValues] = useState<State>({
-    nombre: '',
-    telefono: 0,
-    correo: '',
-    hora: '',
-    fecha: dayjs(new Date()),
-    cedula: 0,
-  })
+  const [errorNombre, setErrorNombre] = useState(false);
+  const [errorApellido, setErrorApellido] = useState(false);
+  const [errorTelefono, setErrorTelefono] = useState(false);
+  const [errorCorreo, setErrorCorreo] = useState(false);
+  const [errorHora, setErrorHora] = useState(false);
+  const [errorCedula, setErrorCedula] = useState(false);
+  const [errorCedulaCant, setErrorCedulaCant] = useState(false);
+  const [errorDireccion, setErrorDireccion] = useState(false);
+  const [errorNacimiento, setErrorNacimiento] = useState(false);
 
-  // ** Hook
-  const theme = useTheme()
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
+  const [cedula, setCedula] = useState<string>('0');
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [direccion, setDireccion] = useState('');
+  const tomorrow = dayjs().add(1, 'day');
+  const [fecha, setFecha] = useState(tomorrow);
+  const [fechaNacimiento, setFechaNacimiento] = useState<Dayjs | null | string>();
+  const [hora, setHora] = useState('');
+  const { data: data } = useGetPacienteByIdQuery(cedula);
+  const { data: Reserva } = useGetReservasByUserCedulaQuery(cedula);
+  const { data: fechas } = useGetReservasByFechaQuery(fecha.format("YYYY-MM-DD"));
+  const [postPaciente] = usePostPacienteMutation();
+  const [postReserva] = useCreateReservaMutation();
+  const [response, setResponse] = useState<any>();
+  const [responseReserva, setResponseReserva] = useState<any>();
+
+  const theme = useTheme();
+
+  const timeSlots = Array.from(new Array(20)).map((_, index) => {
+    const hour = Math.floor(index / 2) + 9;
+    const minute = index % 2 === 0 ? '00' : '30';
+    return `${hour < 10 ? '0' : ''}${hour}:${minute}`;
+  });
+
+  const errorFalse = () => {
+    setErrorNombre(false);
+    setErrorApellido(false);
+    setErrorTelefono(false);
+    setErrorCorreo(false);
+    setErrorDireccion(false);
+    setErrorNacimiento(false);
   }
-  
-  const timeSlots = Array.from(new Array(24 * 2)).map(
-    (_, index) =>
-      `${index < 20 ? '0' : ''}${Math.floor(index / 2)}:${
-        index % 2 === 0 ? '00' : '30'
-      }`,
-  );
 
-  const [selectedOption, setSelectedOption] = useState('');
-  
-
-  const Dias = [
-    { value: 'option1', label: 'Opción 1' },
-    { value: 'option2', label: 'Opción 2' },
-    { value: 'option3', label: 'Opción 3' },
-  ];
-
-  function DisabledOptions() {
-    return (
-      <Autocomplete
-        id="disabled-options-demo"
-        options={timeSlots}
-        getOptionDisabled={(option) =>
-          option === timeSlots[0] || option === timeSlots[2]
-        }
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Disabled options" />}
-      />
-    );
+  const setVacio = () => {
+    setNombre("");
+    setApellido("");
+    setTelefono("");
+    setCorreo("");
+    setDireccion("");
+    setFechaNacimiento(null);
   }
 
-  const [errorNombre, setErrorNombre] = useState<boolean>(false);
-  const [errorTelefono, setErrorTelefono] = useState<boolean>(false);
-  const [errorCorreo, setErrorCorreo] = useState<boolean>(false);
-  const [errorFecha, setErrorFecha] = useState<boolean>(false);
-  const [errorHora, setErrorHora] = useState<boolean>(false);
-  const [errorCedula, setErrorCedula] = useState<boolean>(false);
-  
-  const handlesubmit = () => {
-    console.log(values) 
+  const [isOpen, setOpen] = useState<boolean>(false);
+  const handleClose = () => {
+    window.location.reload();
+  }
+  const [modalError, setModalError] = useState<boolean>(false);
 
-    // Validar campo de nombre
-    if (!values.nombre) {
-      console.log('Nombre');
-        setErrorNombre(true)
+  useEffect(() => {
+    if (cedula != '') {
+      if (data) {
+        const { nombre, apellido, telefono, correo, direccion, fechaNacimiento } = data;
+        setNombre(nombre);
+        setApellido(apellido);
+        setTelefono(telefono.toString());
+        setCorreo(correo);
+        setDireccion(direccion);
+        setFechaNacimiento(dayjs(fechaNacimiento));
+      } else {
+        setErrorNombre(false);
+        setErrorApellido(false);
+        setErrorTelefono(false);
+        setErrorCorreo(false);
+        setErrorDireccion(false);
+        setErrorNacimiento(false);
+        setVacio();
+      }
+    }
+  }, [data])
+
+  const handleCedulaChange = (e: any) => {
+    setErrorCedulaCant(false)
+    setErrorCedula(false)
+    const nuevaCedula = e.target.value;
+    setCedula(nuevaCedula);
+    console.log(nuevaCedula)
+    errorFalse();
+  };
+
+  const handleSubmit = async () => {
+    console.log(data);
+    errorFalse();
+    if (data == null) {
+      if (!cedula || cedula.length != 8) {
+        setErrorCedulaCant(true);
+        setErrorCedula(true);
+        return
+      }
+
+      if (dayjs(fechaNacimiento).isAfter(dayjs(), 'day') || fechaNacimiento == null) {
+        setErrorNacimiento(true)
+      } else {
+        setErrorNacimiento(false)
+      }
+
+      if (!nombre) {
+        setErrorNombre(true);
+        return
+      } else {
+        setErrorNombre(false);
+      }
+
+      if (!apellido) {
+        setErrorApellido(true);
+        return
+      } else {
+        setErrorApellido(false);
+      }
+
+      if (!telefono || telefono.length != 9) {
+        setErrorTelefono(true);
+        return
+      } else {
+        setErrorTelefono(false);
+      }
+
+      if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        setErrorCorreo(true);
+        return
+      } else {
+        setErrorCorreo(false);
+      }
+
+      if (!direccion) {
+        setErrorDireccion(true);
+        return
+      } else {
+        setErrorDireccion(false);
+      }
+    };
+    if (!hora) {
+      setErrorHora(true);
+      return
     } else {
-      setErrorNombre(false)
+      setErrorNombre(false);
     }
 
-    // Validar campo de correo electrónico
-    if (!values.correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.correo)) {
-      console.log('Correo');
-        setErrorCorreo(true)
+    console.log(data)
+    if (data == null) {
+      console.log("entro al if")
+      setResponse(await postPaciente({
+        cedula: cedula,
+        nombre: nombre,
+        apellido: apellido,
+        telefono: telefono,
+        correo: correo,
+        direccion: direccion,
+        fechaNacimiento: formatFecha(fechaNacimiento)
+      }))
+
     } else {
-      setErrorCorreo(false)
+      console.log("entro al else")
+      const selected = formatFecha(fecha);
+      const concatenada = selected?.concat(' ', hora)
+      console.log("holasdf")
+      setResponseReserva(await postReserva({
+        fecha: concatenada,
+        estado: "En espera",
+        pacienteId: cedula
+      })
+      )
+      if (responseReserva?.data?.statusCode === 200) {
+        setModalError(false)
+        setOpen(true)
+      } else {
+        setModalError(true)
+        setOpen(true)
+      }
     }
 
-    // Validar campo de telefono
-    if (!values.telefono || values.telefono > 9999999 && values.telefono < 1000000000) {
-      console.log('Telefono');
-      setErrorTelefono(true)
-    } else {
-      setErrorTelefono(false)
-    }
+  }
 
-     // Validar campo de fecha
-     if (!values.fecha) {
-      console.log('Fecha');
-      setErrorFecha(true)
-    } else {
-      setErrorFecha(false)
+  useEffect(() => {
+    if (response?.data?.statusCode === 200 || data != null) {
+      const selected = formatFecha(fecha);
+      const concatenada = selected?.concat(' ', hora)
+      setResponseReserva(postReserva({
+        fecha: concatenada,
+        estado: "En espera",
+        pacienteId: cedula
+      })
+      )
+      if (responseReserva?.data?.statusCode === 200) {
+        setOpen(true)
+      } else {
+        setModalError(true)
+      }
     }
-    
-     // Validar campo de hora
-     if (!values.hora) {
-      console.log('Hora');
-      setErrorHora(true)
-    } else {
-      setErrorNombre(false)
-    }
+  }, [response])
 
-     // Validar campo de cedula
-     if (!values.cedula) {
-      console.log('cedula');
-      setErrorCedula(true)
-    } else {
-      setErrorCedula(false)
+  const handleTimeChange = (event: any) => {
+    setErrorHora(false)
+    setHora(event.target.value.toString());
+  };
+
+  useEffect(() => {
+    console.log(fechas)
+    console.log(formatDates())
+  }, [fecha])
+
+  const handleDateChange = (newDate: any) => {
+    setFecha(newDate);
+  };
+
+  const handleNacimientoDateChange = (newDate: any) => {
+    setFechaNacimiento(newDate);
+  };
+
+  const formatDates = () => {
+    if (fechas) {
+      const formattedDates = fechas.map((Reserva) => {
+        const dateObject = new Date(Reserva);
+        const formattedDate = moment(dateObject).format('HH:mm');
+        return formattedDate;
+      });
+      return formattedDates;
     }
-    
+    return [];
+  };
+
+  const formatFecha = (fechaParam: any) => {
+    if (fechaParam) {
+      const dateFormated = new Date(fechaParam)
+      const fecha = moment(dateFormated).format('YYYY/MM/DD');
+      return fecha
+    }
+  }
+
+  const filterTimeSlots = () => {
+    const formattedDates = formatDates();
+
+    const filteredTimeSlots = timeSlots.filter(timeSlot => {
+      return !formattedDates.includes(timeSlot);
+    });
+
+    return filteredTimeSlots;
+  };
+
+  const isWeekend = (date: Dayjs) => {
+    const day = date.day();
+
+    return day === 0 || day === 6;
   };
 
 
-  // setear handlechange
-  // error=error...
   return (
-    <Box className='content-center'>
+    <Box className='content-center' >
       <Card sx={{ zIndex: 1 }}>
-        <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-          <Box sx={{ mb: 6, display: 'flex', alignItems: 'center', flexDirection: 'column'}} >
+        <CardContent sx={{ padding: `${theme.spacing(12, 9, 7)} !important` }}>
+          <Box sx={{ mb: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }} >
             <Typography variant='h5' sx={{ fontWeight: 600, marginBottom: 1.5 }}>
               Bienvenido a Smilify
             </Typography>
             <Typography variant='body2'>Rellena los datos para obtener tu primer turno</Typography>
+            {Reserva ? (
+              <Alert severity="error">Ya hay una reserva para esta Cedula</Alert>
+            ) : null}
+
+            {errorCedulaCant ? (
+              <Alert severity="error">La cédula debe tener 8 dígitos</Alert>
+            ) : null}
           </Box>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            {errorNombre? 
-            <TextField autoFocus fullWidth type='string' id='username' label='Nombre Invalido' sx={{ marginBottom: 4 }} error/>
-            
-            :<TextField autoFocus fullWidth type='string' id='username' label='Nombre' sx={{ marginBottom: 4 }}/>
-            }
-            {errorTelefono? 
-              <TextField fullWidth type='number' label='Telefono Invalido' sx={{ marginBottom: 4 }} error/>
-            :<TextField fullWidth type='number' label='Telefono' sx={{ marginBottom: 4 }} />
-            }
-            {errorCorreo?
-              <TextField fullWidth type='email' label='Correo Invalido' sx={{ marginBottom: 4 }} error/> 
-            :<TextField fullWidth type='email' label='Correo' sx={{ marginBottom: 4 }} />
-            }
-            <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <form noValidate autoComplete='off' onSubmit={(e) => e.preventDefault()}>
+            <TextField fullWidth type='number' label='Cedula' sx={{ marginBottom: 4 }} error={errorCedula} onChange={handleCedulaChange} />
+            <TextField autoFocus fullWidth type='string' id='username' label="Nombre" value={nombre} sx={{ marginBottom: 4 }} error={errorNombre} disabled={cedula == "0" || cedula == "" || data != null} onChange={(e) => setNombre(e.target.value)} />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DesktopDatePicker
+                disableFuture
+                sx={{ width: '100%' }}
+                label='Fecha de Nacimiento'
+                format='YYYY/MM/DD'
+                value={fechaNacimiento}
+                disabled={cedula == "0" || cedula == '' || data != null}
+                onChange={handleNacimientoDateChange}
+              />
+            </LocalizationProvider>
+            <TextField fullWidth type='string' label="Apellido" value={apellido} sx={{ marginBottom: 4, marginTop: 4 }} error={errorApellido} disabled={cedula == "0" || cedula == "" || data != null} onChange={(e) => setApellido(e.target.value)} />
+
+            <TextField fullWidth type='number' label="Telefono" value={telefono} sx={{ marginBottom: 4 }} error={errorTelefono} disabled={cedula == "0" || cedula == "" || data != null} onChange={(e) => setTelefono(e.target.value)} />
+
+            <TextField fullWidth type='email' label="Correo" value={correo} sx={{ marginBottom: 4 }} error={errorCorreo} disabled={cedula == "0" || cedula == "" || data != null} onChange={(e) => setCorreo(e.target.value)} />
+            <TextField fullWidth type='email' label="Direccion" value={direccion} sx={{ marginBottom: 4 }} error={errorDireccion} disabled={cedula == "0" || cedula == "" || data != null} onChange={(e) => setDireccion(e.target.value)} />
+            <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
+                  disablePast
                   sx={{ width: '60%' }}
-                  label="fecha"
+                  label='Fecha'
                   format='YYYY/MM/DD'
-                  value={dayjs(values.fecha)}
-                  onChange={(newDate) => {
-                    if (newDate !== null) {
-                    setValues({...values, fecha: dayjs(newDate)})
-                    }
-                  }}
+                  value={fecha}
+                  disabled={cedula == "0" || cedula == '' || Reserva == true}
+                  shouldDisableDate={(date) => isWeekend(date) || date.isSame(dayjs(), 'day')}
+                  onChange={handleDateChange}
                 />
               </LocalizationProvider>
-              {errorHora?
-                  <FormControl sx={{ width: '30%' }}>
-                  <InputLabel id="combo-box-label">selecciona una hora</InputLabel>
-                  <Select
-                    error
-                    label="Selecciona una hora"
-                    labelId="combo-box-label"
-                    id="combo-box"
-                    value={timeSlots}
-                    onChange={DisabledOptions}
-                  >
-                    {Dias.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              :<FormControl sx={{ width: '30%' }}>
-                <InputLabel id="combo-box-label">Hora</InputLabel>
+
+              <FormControl sx={{ width: '30%' }}>
+                <InputLabel id='combo-box-label'>Hora</InputLabel>
                 <Select
-                  label="hora"
-                  labelId="combo-box-label"
-                  id="combo-box"
-                  value={timeSlots}
-                  onChange={DisabledOptions}
+                  disabled={cedula == "0" || cedula === '' || Reserva == true}
+                  error={errorHora}
+                  label='Hora'
+                  labelId='combo-box-label'
+                  id='combo-box'
+                  value={hora}
+                  onChange={handleTimeChange}
                 >
-                  {Dias.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
+                  {filterTimeSlots().map((time) => (
+                    <MenuItem key={time} value={time}>
+                      {time}
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>           
-              }            
+              </FormControl>
             </Box>
-            {errorCedula?
-              <TextField fullWidth type='number' label='Cedula Invalida' sx={{ marginBottom: 10 }} error/>
-            :<TextField fullWidth type='number' label='Cedula' sx={{ marginBottom: 10 }} />
-            }
-            
-            <Button fullWidth size='large' type='submit' variant='contained' sx={{ marginBottom: 7 }} onClick={handlesubmit}>
-              Obtener Turno
-            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button fullWidth size='large' type='submit' variant='contained' sx={{
+                marginBottom: 7, marginTop: 10, backgroundColor: '#6fbfb6', '&:hover': {
+                  backgroundColor: '#6fbfb6',
+                }
+              }} onClick={handleSubmit}>
+                Obtener Turno
+              </Button>
+            </Box>
           </form>
         </CardContent>
       </Card>
-      <FooterIllustrationsV1 />
+      <Modal
+        open={isOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} className='flex flex-col justify-start'>
+          <div className='flex flex-row justify-between'>
+          </div>
+          <div className='flex flex-col justify-between items-center mt-4 mb-8'>
+            {modalError ? (
+              <>
+                <CloseCircleOutline fontSize="large" style={{ color: 'red' }}></CloseCircleOutline>
+                <p className="text-[16px] font-normal text-black mt-2">Ha ocurrido un error, intenta nuevamente</p>
+              </>
+            ) : (
+              <>
+                <CheckCircleOutline fontSize="large" style={{ color: '#84DCCC' }}></CheckCircleOutline>
+                <p className="text-[16px] font-normal text-black mt-2">¡Tu reserva ha sido registrada!</p>
+              </>
+            )}
+          </div >
+          <div className='h-2/6 flex flex-col items-center justify-center'>
+            <button className='h-14 w-44 font-semibold bg-[#84DCCC] text-white rounded-md mb-4' style={{ outline: 'none' }}
+              onClick={handleClose}
+            >Aceptar</button>
+          </div>
+        </Box>
+      </Modal>
     </Box>
-  )
-}
+  );
+};
 
-RegisterPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+const StyledFooterIllustrationsV1 = styled(FooterIllustrationsV1)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+`;
 
-export default RegisterPage
+const RegisterPageContainer = () => {
+  return (
+    <BlankLayout>
+      <RegisterPage />
+      <StyledFooterIllustrationsV1 />
+    </BlankLayout>
+  );
+};
 
+export default RegisterPageContainer;
