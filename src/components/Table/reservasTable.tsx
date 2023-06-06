@@ -1,6 +1,13 @@
 import clsx from "clsx";
 import { Reserva } from "src/types/reserva";
 
+import ConfirmationModal from "src/components/Modals/ConfirmationModal";
+
+import moment from "moment";
+import "moment/locale/es"; // Importa el idioma deseado para moment.js
+import { useEffect, useState } from "react";
+moment.locale("es");
+
 type ColItem = {
   key: string;
   value: any;
@@ -13,20 +20,28 @@ interface Props {
   onlyDiarias?: Boolean;
 }
 
-const ReservasTable = ({ cols, values, onlyDiarias }: Props) => {
+const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    console.log(isModalOpen)
+  }, [isModalOpen]);
   const renderNoResults = () => {
-    <div className="w-full h-full flex-grow flex items-center justify-center ">
-      <span className="text-[#514D59] font-medium">
-        No se encontraron resultados
-      </span>
-    </div>;
+    return (
+      <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
+        <span className="text-[#514D59] font-medium py-8">
+          No se encontraron resultados
+        </span>
+      </div>
+    );
   };
 
   const renderSwitch = (value: any, col: any) => {
     switch (col?.key) {
       case "nombre":
         return (
-          <span className="text-center m-auto">{value.paciente?.nombre + " " + value.paciente?.apellido}</span>
+          <span className="text-center m-auto">
+            {value.paciente?.nombre + " " + value.paciente?.apellido}
+          </span>
         );
       case "correo":
         return (
@@ -39,13 +54,15 @@ const ReservasTable = ({ cols, values, onlyDiarias }: Props) => {
       case "fecha":
         return (
           <span className="text-center m-auto">
-            {getProperDate(value[col?.key])?.toLocaleDateString("es-UY")}
+            {getProperDate(value[col?.key])
+              ?.format("DD-MM-YYYY, HH:mm:ss")
+              .toString()}
           </span>
         );
       case "hora":
         return (
           <span className="text-center m-auto">
-            {getProperDate(value["fecha"])?.toLocaleTimeString("es-UY")}
+            {getProperDate(value["fecha"])?.format("HH:mm:ss").toString()}
           </span>
         );
       default:
@@ -53,74 +70,84 @@ const ReservasTable = ({ cols, values, onlyDiarias }: Props) => {
     }
   };
 
-  function getProperDate(date: Number) {
+  function getProperDate(date: number) {
     if (date == null) return null;
-    return new Date(parseInt(date.toString(6)));
+    return moment(new Date(date).toLocaleString(), "M/D/YYYY, HH:mm:ss");
   }
 
   return (
-    <div className="w-full h-auto flex flex-col items-start justify-start">
-      {
-        <div className="w-full h-auto flex flex-row items-center justify-between row pr-36 xl:pr-52 2xl:pr-54">
-          {cols?.map((item: ColItem, index: number) => {
-            return (
-              <div
-                key={index}
-                className={clsx(
-                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-semibold flex-row items-center justify-between",
-                  item?.customWidth &&
-                    `${
-                      item?.customWidth === "auto"
-                        ? "w-min"
-                        : `w-[${item?.customWidth}]`
-                    }`
-                )}
-              >
-                <span className="text-center m-auto">{item.value}</span>
-              </div>
-            );
-          })}
-        </div>
-      }
-      {values
-        ? values?.map((item: any, index: number) => {
-            return (
-              <div
-                key={index}
-                className="w-full h-auto flex flex-row items-center justify-between row"
-              >
-                {cols?.map((col: ColItem, index: number) => {
-                  return (
-                    <div
-                      key={index}
-                      className={clsx(
-                        "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
-                        col?.customWidth && `w-[${col?.customWidth}]`
-                      )}
-                    >
-                      {renderSwitch(item, col)}
-                    </div>
-                  );
-                })}
-                <div className="flex w-3/4 gap-6">
-                  <a href="#" className="decoration-none text-[#84DCCC]">
-                    {onlyDiarias ? "Cancelar" : "Aceptar"}
-                  </a>
-                  {!onlyDiarias ? (
-                    <a href="#" className="decoration-none text-[#84DCCC]">
-                      Modificar
-                    </a>
-                  ) : (
-                    <a href="#" className="decoration-none uppercase text-[#84DCCC]">
-                      Iniciar Consulta
-                    </a>
+    <>
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        text="¿Confirma el iniciar esta consulta?"
+      />
+      <div className="w-full h-auto flex flex-col items-start justify-start">
+        {
+          <div className="w-full h-auto flex flex-row items-center justify-between row pr-36 xl:pr-52 2xl:pr-64">
+            {cols?.map((item: ColItem, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className={clsx(
+                    "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-semibold flex-row items-center justify-between",
+                    item?.customWidth &&
+                      `${
+                        item?.customWidth === "auto"
+                          ? "w-min"
+                          : `w-[${item?.customWidth}]`
+                      }`
                   )}
+                >
+                  <span className="text-center m-auto">{item.value}</span>
                 </div>
-              </div>
-            );
-          })
-        : renderNoResults()}
-    </div>
+              );
+            })}
+          </div>
+        }
+        {values?.length > 0
+          ? values?.map((item: any, index: number) => {
+              return (
+                <div
+                  key={index}
+                  className="w-full h-auto flex flex-row items-center justify-between row"
+                >
+                  {cols?.map((col: ColItem, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className={clsx(
+                          "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
+                          col?.customWidth && `w-[${col?.customWidth}]`
+                        )}
+                      >
+                        {renderSwitch(item, col)}
+                      </div>
+                    );
+                  })}
+                  <div className="flex w-3/4 gap-6">
+                    <a href="#" className="decoration-none text-[#84DCCC]">
+                      {onlyDiarias ? "Cancelar" : "Aceptar"}
+                    </a>
+                    {!onlyDiarias ? (
+                      <a href="#" className="decoration-none text-[#84DCCC]">
+                        Modificar
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="decoration-none uppercase text-[#84DCCC]"
+                      >
+                        Iniciar Consulta
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          : renderNoResults()}
+      </div>
+    </>
   );
 };
 

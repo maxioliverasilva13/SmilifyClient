@@ -6,6 +6,7 @@ const apiRoutes = {
     postArancelPublico: () => "/entities.arancel/create",
     postArancelCooperativo: () => "/entities.arancel/create",
     getReservas: () => "/entities.reserva",
+    getReservasHoy: () => "/entities.reserva/listarHoy",
     uploadFile: () => "/entities.archivo/createArchivo",
     getArchivosByPacienteId: () => "/entities.archivo/getArchivosByPacienteId/",
     getInfoDiente: () => "/entities.dienteinfo/getInfoDiente",
