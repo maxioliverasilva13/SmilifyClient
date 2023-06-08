@@ -6,14 +6,14 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:8080/Smilify-1.0/resources",
   prepareHeaders,
 });
-  
+
 export const DienteService = createApi({
   reducerPath: "DienteService",
   baseQuery: baseQuery,
-  tagTypes: ["DienteInfo"],
-  endpoints: builder => ({
+  tagTypes: ["DienteInfo", "AllDientesInfo"],
+  endpoints: (builder) => ({
     createDienteInfo: builder.mutation({
-      query: data => {
+      query: (data) => {
         return {
           url: apiRoutes.createDienteInfo(),
           method: "POST",
@@ -27,22 +27,20 @@ export const DienteService = createApi({
       },
     }),
     getInfoDiente: builder.mutation({
-        query: data => {
-          return {
-            url: apiRoutes.getInfoDiente(),
-            method: "POST",
-            body: data,
-          };
-        },
-        transformResponse(value) {
-          const response = value;
-          return response;
-        },
-      }),
+      query: (data) => {
+        return {
+          url: apiRoutes.getInfoDiente(),
+          method: "POST",
+          body: data,
+        };
+      },
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
   }),
 });
 
-export const {
-  useCreateDienteInfoMutation,
-  useGetInfoDienteMutation,
-} = DienteService;
+export const { useCreateDienteInfoMutation, useGetInfoDienteMutation } =
+  DienteService;
