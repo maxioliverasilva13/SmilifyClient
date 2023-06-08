@@ -22,9 +22,9 @@ interface Props {
 
 const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
+  /* useEffect(() => {
     console.log(isModalOpen)
-  }, [isModalOpen]);
+  }, [isModalOpen]); */
   const renderNoResults = () => {
     return (
       <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">

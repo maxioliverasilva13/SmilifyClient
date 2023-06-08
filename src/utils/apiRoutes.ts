@@ -10,6 +10,7 @@ const apiRoutes = {
     postArancelCooperativo: () => "/entities.arancel/create",
     getReservas: () => "/entities.reserva",
     getReservasHoy: () => "/entities.reserva/listarHoy",
+    getReservasMonth: (month: number, year: number) => `/entities.reserva/listarMensual/${month}/${year}`,
     uploadFile: () => "/entities.archivo/createArchivo",
     getArchivosByPacienteId: () => "/entities.archivo/getArchivosByPacienteId/",
     getInfoDiente: () => "/entities.dienteinfo/getInfoDiente",
