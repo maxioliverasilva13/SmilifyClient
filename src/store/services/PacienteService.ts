@@ -34,11 +34,11 @@ export const PacienteService = createApi({
       query: (data: any) => ({
         url: apiRoutes.cambiarEstado(),
         method: "POST",
-        body : {
+        body: {
           pacienteId: data?.pacienteId,
           alta: data?.alta,
           fechaAlta: data?.fechaAlta,
-        }
+        },
       }),
       transformResponse(value) {
         const response = value as PacienteInfoResponse;
@@ -77,4 +77,10 @@ export const PacienteService = createApi({
   }),
 });
 
-export const { useGetPacientesQuery, useGetPacienteInfoQuery, useCambiarEstadoMutation } = PacienteService;
+export const {
+  useGetPacientesQuery,
+  useGetPacienteInfoQuery,
+  useCambiarEstadoMutation,
+  useGetPacienteByIdQuery,
+  usePostPacienteMutation,
+} = PacienteService;
