@@ -65,6 +65,9 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
           })}
         </div>
       }
+      {values && values?.length === 0 && <div className="w-full flex items-center justify-center h-auto p-10">
+        <span>No se encontraron consultas</span>
+        </div>}
       {values
         ? values?.map((item: any, index: number) => {
             const isExpanded = expandedItems?.find(
@@ -118,7 +121,7 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
                     <span className="text-[#514D59] text-[20px] font-medium">
                       Datos de la consulta
                     </span>
-                    <span className="text-[#514D59] text-[18px] font-normal max-w-full overflow-hidden truncate">
+                    <span className="text-[#514D59] text-[18px] font-normal max-w-[80%] overflow-hidden truncate overflow-hidden">
                       Descripcion: {item?.descripcion}
                     </span>
                   </div>

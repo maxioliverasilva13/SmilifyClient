@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
 export const ReservaService = createApi({
   reducerPath: "ReservaService",
   baseQuery: baseQuery,
-  tagTypes: ["Reservas"],
+  tagTypes: ["Reservas", "ReservasHoy"],
   endpoints: (builder) => ({
     getReservas: builder.query({
       providesTags: ["Reservas"],
@@ -21,7 +21,13 @@ export const ReservaService = createApi({
         return response;
       },
     }),
-
+    getReservasHoy: builder.query({
+      providesTags: ["ReservasHoy"],
+      query: () => apiRoutes.getReservasHoy(),
+      transformResponse(value) {
+        const response = value as Reserva[];
+      }
+    }),
     createReserva: builder.mutation({
       query: (data) => ({
         url: `${apiRoutes.postReserva()}`,
@@ -62,5 +68,6 @@ export const {
   useGetReservasQuery,
   useCreateReservaMutation,
   useGetReservasByFechaQuery,
-  useGetReservasByUserCedulaQuery
+  useGetReservasByUserCedulaQuery,
+  useGetReservasHoyQuery
 } = ReservaService;

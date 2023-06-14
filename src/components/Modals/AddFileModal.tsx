@@ -14,6 +14,7 @@ import {
   useGetArchivosByPacienteIdQuery,
   useCreateArchivoMutation,
 } from "src/store/services/FileService";
+import { useGetPacienteInfoQuery } from "src/store/services/PacienteService";
 
 const theme = createTheme({
   breakpoints: {
@@ -53,6 +54,7 @@ type archivoBD = {
   url: String;
   tipo: String;
   paciente_id: Number;
+  fileName: String,
 };
 
 type filePreview = {
@@ -65,13 +67,15 @@ interface Props {
   isOpen: boolean;
   setIsOpen: Function;
   paciente: Paciente;
+  onSuccess?: Function
 }
 
-export default function AddFileModal({ isOpen, setIsOpen, paciente }: Props) {
+export default function AddFileModal({ isOpen, setIsOpen, paciente, onSuccess }: Props) {
   const [createArchivo] = useCreateArchivoMutation();
   const [file, setFile] = useState<File>();
   const { handleUpload, fileError, fileUrl } = useUploadFile();
   const [preview, setPreview] = useState<filePreview>(); // imagen a mostrar
+  const [fileName, setFileName] = useState<string>(""); // imagen a mostrar
 
   const [error, setError] = useState({
     show: false,
@@ -116,8 +120,14 @@ export default function AddFileModal({ isOpen, setIsOpen, paciente }: Props) {
           paciente_id: paciente.id,
           tipo: file.type,
           url: response,
+          fileName: fileName,
         };
-        await createArchivo(fileData).then(setIsOpen(false));
+        await createArchivo(fileData).then(() => {
+          setIsOpen(false)
+          if (onSuccess) {
+            onSuccess();
+          }
+        });
       });
   };
 
@@ -128,6 +138,7 @@ export default function AddFileModal({ isOpen, setIsOpen, paciente }: Props) {
       return;
     }
     setFile(e?.target?.files[0]);
+    setFileName(e?.target?.files[0].name)
     setPreview({
       name: e?.target?.files[0]?.name,
       url: URL.createObjectURL(e?.target?.files[0]),
@@ -146,7 +157,7 @@ export default function AddFileModal({ isOpen, setIsOpen, paciente }: Props) {
       >
         <Box
           sx={() => style(theme)}
-          className="flex flex-col justify-start h-3/5 gap-y-2"
+          className="flex flex-col justify-start auto gap-y-2"
         >
           <div className="flex flex-row justify-between pt-1 px-5">
             <p className="text-[28px] font-semibold text-[#84DCCC]">
@@ -210,13 +221,20 @@ export default function AddFileModal({ isOpen, setIsOpen, paciente }: Props) {
               {error.message}
             </Alert>
           )}
+            <input
+            type="text"
+            className="w-full px-4 py-4 border outline-none  border-gray-400 rounded-lg"
+            placeholder="Nombre de archivo"
+            value={fileName}
+            onChange={(e: any) => setFileName(e?.target?.value || "")}
+          />
           <div className="flex flex-col p-6 items-center justify-center">
             <button
               className="h-14 w-44 font-semibold bg-[#84DCCC] text-white rounded-md"
               style={{ outline: "none" }}
               onClick={handleSubmit}
             >
-              GUARDAR
+              Guardar
             </button>
           </div>
         </Box>

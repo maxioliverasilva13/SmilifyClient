@@ -17,7 +17,7 @@ export const FileService = createApi({
         return {
           url: apiRoutes.uploadFile(),
           method: "POST",
-          body: { url: data?.url, tipo: data?.tipo, paciente_id: data?.paciente_id },
+          body: { url: data?.url, tipo: data?.tipo, paciente_id: data?.paciente_id, fileName: data?.fileName },
         };
       },
       transformResponse(value) {

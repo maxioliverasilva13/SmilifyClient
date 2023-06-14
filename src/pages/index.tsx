@@ -34,15 +34,6 @@ const cols: any = [
   },
 ];
 
-const pacienteTest: Paciente = {
-  id: 0,
-  nombre: "Pepito",
-  apellido: "Perez",
-  correo: "Pepito@mail.com",
-  telefono: "096587605",
-  direccion: "herrera 330",
-};
-
 const Dashboard = () => {
   const { data: reservas, isLoading } = useGetReservasQuery({});
 
@@ -54,11 +45,6 @@ const Dashboard = () => {
 
   return (
     <ApexChartWrapper className="flex flex-col gap-7">
-      <AddFileModal
-        isOpen={isFileModalOpen}
-        setIsOpen={setIsFileModalOpen}
-        paciente={pacienteTest}
-      />
       <Grid item xs={12} md={12}>
         <StatisticsCard />
       </Grid>
