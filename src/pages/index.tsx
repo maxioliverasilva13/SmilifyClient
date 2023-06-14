@@ -7,7 +7,6 @@ import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 import StatisticsCard from "src/views/dashboard/StatisticsCard";
 
 import ReservasTable from "src/components/Table/reservasTable";
-import AddFileModal from "src/components/Modals/AddFileModal";
 
 import { useGetReservasQuery } from "src/store/services/ReservaService";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
@@ -37,8 +36,6 @@ const cols: any = [
 const Dashboard = () => {
   const { data: reservas, isLoading } = useGetReservasQuery({});
 
-  const [isFileModalOpen, setIsFileModalOpen] = useState<boolean>(false);
-
   if (isLoading) {
     return <GlobalSpinner />;
   }
@@ -60,13 +57,6 @@ const Dashboard = () => {
           <ReservasTable cols={cols} values={reservas} />
         </div>
       </div>
-      <button
-        onClick={() => setIsFileModalOpen((current) => !current)}
-        className="w-max self-center bg-purple-700 active:bg-purple-800 hover:bg-purple-900 text-white font-semibold
-        hover:shadow-md shadow text-md px-5 py-2 rounded-full outline outline-1 sm:mr-2 mb-1 ease-linear transition-all duration-150"
-      >
-        Subir Archivo
-      </button>
     </ApexChartWrapper>
   );
 };
