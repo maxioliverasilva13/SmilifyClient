@@ -71,6 +71,22 @@ export const ReservaService = createApi({
         return response;
       },
     }),
+    cambiarEstadoReserva: builder.mutation({
+      invalidatesTags: ["Reservas", "ReservasHoy", "ReservasMonth"],
+      query: (data) => ({
+        url: `${apiRoutes.cambiarEstadoReserva()}`,
+        method: "POST",
+        body: {
+          id: data?.id,
+          operacion: data?.operacion,
+          fecha: data?.fecha,
+        },
+      }),
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
   }),
 });
 
@@ -81,4 +97,5 @@ export const {
   useGetReservasByUserCedulaQuery,
   useGetReservasHoyQuery,
   useGetReservasMonthQuery,
+  useCambiarEstadoReservaMutation,
 } = ReservaService;
