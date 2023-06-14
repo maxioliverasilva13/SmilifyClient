@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { Zone } from "src/types/paciente";
 
 export const getEdadbyFecha = (fecha: number | null | undefined): number => {
   try {
@@ -48,4 +49,33 @@ export const getProximaConsulta = (consultas: any[]) => {
 
 export const getFileName = (url: string) => {
 
+}
+
+
+export const getDientesInfoCount = (dientesInfo: any[] | undefined, dienteId: number): any[] => {
+  if (!dientesInfo || dientesInfo?.length == 0) return [];
+
+  return dientesInfo?.filter((item) => Number(item?.dienteId) == dienteId);
+}
+
+
+export const getColorsByItem = (dientesInfo: any[] | undefined, zone: Zone): string => {
+  if (dientesInfo?.length === 0 || !dientesInfo || !zone) {
+    return "white";
+  }
+  const itemsCountOfZone = dientesInfo?.filter((item: any) => item?.type == zone);
+  console.log("itemsCountOfZone?.length", itemsCountOfZone?.length)
+  if (itemsCountOfZone?.length == 0) {
+    return "white";
+  }
+  if (itemsCountOfZone?.length >= 10) {
+    return "rgba(255,120,124,0.800)";
+    // red
+  } else if (itemsCountOfZone?.length >= 5) {
+    return "rgba(235,232,54,0.8)";
+    // yellow
+  } else {
+    return "rgba(164,255,164,0.5)";
+    // green
+  }
 }

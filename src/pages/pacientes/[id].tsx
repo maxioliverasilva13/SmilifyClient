@@ -7,6 +7,7 @@ import OdontoGrama from "src/components/Odontograma/Odontograma";
 import { useRouter } from "next/router";
 import {
   useCambiarEstadoMutation,
+  useGetDientesInfoQuery,
   useGetPacienteInfoQuery,
 } from "src/store/services/PacienteService";
 import Loader from "src/components/Loader/Loader";
@@ -79,12 +80,12 @@ const PacienteInfo = () => {
     }
   }, [data]);
 
-
   if (!isLoading && !data) {
     return <Error404 />;
   }
 
   const formattedConsultas = formatConsultas(data?.consultas || []);
+
 
   const handleCambiarEstado = async (alta?: boolean) => {
     let dataToSend: any = {
@@ -186,6 +187,26 @@ const PacienteInfo = () => {
         <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
           Odontograma
         </span>
+        <div className="w-auto h-auto flex flex-col items-start gap-2 my-4 justify-start">
+            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+                <div className="w-[25px] h-[25px] bg-[rgba(255,120,124,0.800)] rounded-full overflow-hidden">
+
+                </div>
+                <span>Mas de 10 datos</span>
+            </div>
+            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+                <div className="w-[25px] h-[25px] bg-[rgba(235,232,54,0.8)] rounded-full overflow-hidden">
+
+                </div>
+                <span>Mas de 5 datos</span>
+            </div>
+            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+                <div className="w-[25px] h-[25px] bg-[rgba(164,255,164,0.5)] rounded-full overflow-hidden">
+
+                </div>
+                <span>Entre 1-5 datos</span>
+            </div>
+        </div>
         <OdontoGrama uid={userId} />
 
         <span className="text-[#84DCCC] font-semibold text-[26px] my-2">

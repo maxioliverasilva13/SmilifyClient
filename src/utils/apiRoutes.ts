@@ -15,6 +15,7 @@ const apiRoutes = {
     getArchivosByPacienteId: () => "/entities.archivo/getArchivosByPacienteId/",
     getInfoDiente: () => "/entities.dienteinfo/getInfoDiente",
     createDienteInfo: () => "/entities.dienteinfo",
+    getDientesInfo: (pacienteId: any) => `/entities.dienteinfo/infoDientesByPaciente?pacienteId=${pacienteId}`,
     getAranceles: () => "/entities.arancel",
     postPaciente: () => "/entities.paciente",
     postReserva: () => "/entities.reserva",
