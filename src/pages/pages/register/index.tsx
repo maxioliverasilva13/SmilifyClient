@@ -85,8 +85,18 @@ const RegisterPage = () => {
   const { data: fechas } = useGetReservasByFechaQuery(fecha.format("YYYY-MM-DD"));
   const [postPaciente] = usePostPacienteMutation();
   const [postReserva] = useCreateReservaMutation();
-  const [response, setResponse] = useState<any>();
-  const [responseReserva, setResponseReserva] = useState<any>();
+  const [response, setResponse] = useState<any>("");
+  const [responseReserva, setResponseReserva] = useState<any>("");
+  const [isOpen, setOpen] = useState<boolean>(false);
+  const handleClose = () => {
+    window.location.reload();
+  }
+  const [modalError, setModalError] = useState<boolean>(false);
+
+
+  console.log(response);
+  console.log(responseReserva);
+  console.log(isOpen);
 
   const theme = useTheme();
 
@@ -114,11 +124,6 @@ const RegisterPage = () => {
     setFechaNacimiento(null);
   }
 
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const handleClose = () => {
-    window.location.reload();
-  }
-  const [modalError, setModalError] = useState<boolean>(false);
 
   useEffect(() => {
     if (cedula != '') {
@@ -143,16 +148,14 @@ const RegisterPage = () => {
   }, [data])
 
   const handleCedulaChange = (e: any) => {
-    setErrorCedulaCant(false)
-    setErrorCedula(false)
+    setErrorCedulaCant(false);
+    setErrorCedula(false);
     const nuevaCedula = e.target.value;
     setCedula(nuevaCedula);
-    console.log(nuevaCedula)
     errorFalse();
   };
 
   const handleSubmit = async () => {
-    console.log(data);
     errorFalse();
     if (data == null) {
       if (!cedula || cedula.length != 8) {
@@ -209,9 +212,8 @@ const RegisterPage = () => {
       setErrorNombre(false);
     }
 
-    console.log(data)
     if (data == null) {
-      console.log("entro al if")
+
       setResponse(await postPaciente({
         cedula: cedula,
         nombre: nombre,
@@ -221,56 +223,62 @@ const RegisterPage = () => {
         direccion: direccion,
         fechaNacimiento: formatFecha(fechaNacimiento)
       }))
-
     } else {
-      console.log("entro al else")
+
       const selected = formatFecha(fecha);
       const concatenada = selected?.concat(' ', hora)
-      console.log("holasdf")
+
       setResponseReserva(await postReserva({
         fecha: concatenada,
         estado: "En espera",
         pacienteId: cedula
       })
       )
-      if (responseReserva?.data?.statusCode === 200) {
-        setModalError(false)
-        setOpen(true)
-      } else {
-        setModalError(true)
-        setOpen(true)
-      }
     }
 
   }
 
   useEffect(() => {
-    if (response?.data?.statusCode === 200 || data != null) {
-      const selected = formatFecha(fecha);
-      const concatenada = selected?.concat(' ', hora)
-      setResponseReserva(postReserva({
-        fecha: concatenada,
-        estado: "En espera",
-        pacienteId: cedula
-      })
-      )
+    const makeReserva = async () => {
+      if (response !== "") {
+        if (response?.data?.statusCode === 200 || data == null) {
+          const selected = formatFecha(fecha);
+          const concatenada = selected?.concat(' ', hora);
+          const responseReserva = await postReserva({
+            fecha: concatenada,
+            estado: "En espera",
+            pacienteId: cedula
+          });
+          setResponseReserva(responseReserva);
+        }
+      }
+    };
+
+    makeReserva();
+  }, [response]);
+
+
+  useEffect(() => {
+    if (responseReserva != "") {
+
       if (responseReserva?.data?.statusCode === 200) {
-        setOpen(true)
+        console.log(responseReserva.data.statusCode)
+        setModalError(false);
+        setOpen(true);
       } else {
-        setModalError(true)
+        setModalError(true);
+        setOpen(true);
       }
     }
-  }, [response])
+  }, [responseReserva]);
+
+
 
   const handleTimeChange = (event: any) => {
     setErrorHora(false)
     setHora(event.target.value.toString());
   };
 
-  useEffect(() => {
-    console.log(fechas)
-    console.log(formatDates())
-  }, [fecha])
 
   const handleDateChange = (newDate: any) => {
     setFecha(newDate);
@@ -379,11 +387,17 @@ const RegisterPage = () => {
                   value={hora}
                   onChange={handleTimeChange}
                 >
-                  {filterTimeSlots().map((time) => (
-                    <MenuItem key={time} value={time}>
-                      {time}
+                  {!hora ? (
+                    filterTimeSlots().map((time) => (
+                      <MenuItem key={time} value={time}>
+                        {time}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled value="">
+                      No hay turnos disponibles para este día
                     </MenuItem>
-                  ))}
+                  )}
                 </Select>
               </FormControl>
             </Box>
