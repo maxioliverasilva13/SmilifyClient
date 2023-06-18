@@ -6,7 +6,7 @@ export type Paciente = {
     correo: string,
     cedula: number,
     direccion: string,
-    fechaDeNacimiento: number | null,
+    fechaNacimiento: number | string | null,
     tieneAlta: boolean,
     fechaDeAlta: number,
 }

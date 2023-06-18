@@ -81,6 +81,7 @@ export const PacienteService = createApi({
         return response;
       },
     }),
+
   }),
 });
 
@@ -92,3 +93,4 @@ export const {
   usePostPacienteMutation,
   useGetDientesInfoQuery,
 } = PacienteService;
+
