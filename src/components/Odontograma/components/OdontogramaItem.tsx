@@ -1,8 +1,9 @@
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import ModalDiente from "./ModalDiente";
+import { Zone } from "src/types/paciente";
+import { getColorsByItem } from "src/utils/paciente";
 
-type Zone = "Izquierda" | "Arriba" | "Derecha" | "Abajo" | "Centro";
 type Type = "five" | "four";
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
   withClick?: boolean;
   defaultZone?: string;
   uid: string;
+  countData?: any[],
+  onSuccessAdded: Function
 }
 
 const OdontoGramaItem = ({
@@ -21,6 +24,8 @@ const OdontoGramaItem = ({
   withClick = true,
   defaultZone,
   uid,
+  onSuccessAdded,
+  countData,
 }: Props) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedZone, setSelectedZone] = useState<Zone | undefined>(
@@ -50,6 +55,7 @@ const OdontoGramaItem = ({
           setOpen={() => setOpenModal(false)}
           type={type}
           uid={uid}
+          onSuccess={onSuccessAdded}
         />
       )}
       {isTop && renderDienteNumber()}
@@ -64,35 +70,42 @@ const OdontoGramaItem = ({
               onClick={() => handleClick("Izquierda")}
               className={clsx(
                 "trapecio cursor-pointer transition-all trapecioLeft",
-                selectedZone === "Izquierda" && "active"
+                selectedZone === "Izquierda" && "active",
+                `border-b-[${getColorsByItem(countData, "Izquierda") }]`
               )}
             />
             <div
               onClick={() => handleClick("Derecha")}
               className={clsx(
                 "trapecio cursor-pointer transition-all trapecioRight",
-                selectedZone === "Derecha" && "active"
+                selectedZone === "Derecha" && "active",
+                `border-b-[${getColorsByItem(countData, "Derecha") }]`
+
               )}
             />
             <div
               onClick={() => handleClick("Arriba")}
               className={clsx(
                 "trapecio cursor-pointer transition-all trapecioTop",
-                selectedZone === "Arriba" && "active"
+                selectedZone === "Arriba" && "active",
+                `border-b-[${getColorsByItem(countData, "Arriba") }]`
               )}
             />
             <div
               onClick={() => handleClick("Abajo")}
               className={clsx(
                 "trapecio cursor-pointer transition-all trapecioBottom",
-                selectedZone === "Abajo" && "active"
+                selectedZone === "Abajo" && "active",
+                `border-b-[${getColorsByItem(countData, "Abajo") }]`
+
               )}
             />
             <div
               onClick={() => handleClick("Centro")}
               className={clsx(
                 "centerItem cursor-pointer transition-all ",
-                selectedZone === "Centro" && "active"
+                selectedZone === "Centro" && "active",
+                `bg-[${getColorsByItem(countData, "Centro") }]`
               )}
             />
           </>
@@ -104,28 +117,33 @@ const OdontoGramaItem = ({
               onClick={() => handleClick("Izquierda")}
               className={clsx(
                 " cursor-pointer transition-all triangleLeft",
-                selectedZone === "Izquierda" && "active"
+                selectedZone === "Izquierda" && "active",
+                `border-l-[${getColorsByItem(countData, "Izquierda") }]`
               )}
             />
             <div
               onClick={() => handleClick("Derecha")}
               className={clsx(
                 " cursor-pointer transition-all triangleRight",
-                selectedZone === "Derecha" && "active"
+                selectedZone === "Derecha" && "active",
+                `border-r-[${getColorsByItem(countData, "Derecha") }]`
+
               )}
             />
             <div
               onClick={() => handleClick("Arriba")}
               className={clsx(
                 "triangle cursor-pointer transition-all triangleTop",
-                selectedZone === "Arriba" && "active"
+                selectedZone === "Arriba" && "active",
+                getColorsByItem(countData, "Arriba") !== "white" && `border-[${getColorsByItem(countData, "Arriba") }]`
               )}
             />
             <div
               onClick={() => handleClick("Abajo")}
               className={clsx(
                 "triangle cursor-pointer transition-all triangleBottom",
-                selectedZone === "Abajo" && "active"
+                selectedZone === "Abajo" && "active",
+                getColorsByItem(countData, "Abajo") !== "white" && `border-[${getColorsByItem(countData, "Abajo") }]`
               )}
             />
           </>

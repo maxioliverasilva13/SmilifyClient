@@ -7,6 +7,9 @@ export const storageToken = (token: any) => {
 
 export const getToken = () => localStorage.getItem(DEFAULT_TOKEN_KEY_STORAGE);
 
+export const clearToken = () => localStorage.removeItem(DEFAULT_TOKEN_KEY_STORAGE);
+
+
 export const prepareHeaders = (headers: any) => {
   const token = getToken();
   // headers.set('Access-Control-Allow-Origin', `*`)  

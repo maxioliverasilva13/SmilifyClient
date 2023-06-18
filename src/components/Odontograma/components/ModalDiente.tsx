@@ -15,6 +15,7 @@ interface Props {
   zone: string | any;
   clearZone: any;
   uid: string;
+  onSuccess: Function,
 }
 
 const cols: any = [
@@ -43,6 +44,7 @@ export default function ModalDiente({
   zone,
   clearZone,
   uid,
+  onSuccess,
 }: Props) {
   const handleClose = () => {
     if (clearZone) clearZone();
@@ -64,6 +66,9 @@ export default function ModalDiente({
   React.useEffect(() => {
     if (success) {
       handleLoadDientesInfo();
+      if (onSuccess) {
+        onSuccess();
+      }
     }
   }, [success]);
 
@@ -112,6 +117,7 @@ export default function ModalDiente({
 
         <OdontoGramaItem
           dienteId={dienteId}
+          onSuccessAdded={() => null}
           isTop={false}
           defaultZone={zone}
           withClick={false}

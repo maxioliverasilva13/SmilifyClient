@@ -11,7 +11,10 @@ import ApexChartWrapper from "src/@core/styles/libs/react-apexcharts";
 
 import ReservasTable from "src/components/Table/reservasTable";
 
-import { useGetReservasHoyQuery } from "src/store/services/ReservaService";
+import {
+  useGetReservasHoyQuery,
+  useGetReservasMonthQuery,
+} from "src/store/services/ReservaService";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import ConfirmationModal from "src/components/Modals/ConfirmationModal";
 
@@ -42,15 +45,37 @@ const customTags = {
   showMore: (total: any) => `Ver más (${total})`,
 };
 
-const Agenda = () => {
-  const { data: reservas, isLoading } = useGetReservasHoyQuery({});
+type fetchMonthlyInfo = {
+  month: number;
+  year: number;
+};
 
-  if (isLoading) {
+const Agenda = () => {
+  const [currentViewDate, setCurrentViewDate] = useState<fetchMonthlyInfo>({
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
+  const {
+    data: reservasToday,
+    isLoading: isReservasTodayLoading,
+  } = useGetReservasHoyQuery({});
+  const {
+    data: reservasMonth,
+    isLoading: isRMonthLoading,
+    refetch: refetchMonth,
+  } = useGetReservasMonthQuery(currentViewDate);
+
+  useEffect(() => {
+    refetchMonth();
+  }, [currentViewDate]);
+
+  if (isReservasTodayLoading || isRMonthLoading) {
     return <GlobalSpinner />;
   }
-  const MyCalendar = () => { // El calendar recibe el listado de reservas para el día actual.
-    if (!isLoading) {
-      const fechas = reservas?.map((reserva) => {
+  const MyCalendar = () => {
+    // El calendar recibe el listado de reservas para el MES actual.
+    if (!isRMonthLoading) {
+      const fechas = reservasMonth?.map((reserva) => {
         return new Object({
           id: reserva.id,
           title: reserva.paciente.nombre + " " + reserva.paciente.apellido,
@@ -58,6 +83,15 @@ const Agenda = () => {
           end: moment(new Date(reserva.fecha)).add(30, "minutes").toDate(),
         });
       });
+
+      const handleNavigate = (newDate: Date, view: any) => {
+        if (newDate.getMonth() + 1 !== currentViewDate.month) {
+          setCurrentViewDate({
+            month: newDate.getMonth() + 1,
+            year: newDate.getFullYear(),
+          });
+        }
+      };
       return (
         <div>
           <Calendar
@@ -71,6 +105,7 @@ const Agenda = () => {
             // timeslots={2}
             scrollToTime={moment().hour(8).toDate()}
             messages={customTags}
+            onNavigate={handleNavigate}
             // onDoubleClickEvent={(event) => {console.log(event)}}
             onSelectEvent={(event: any) => {
               console.log(event);
@@ -93,7 +128,11 @@ const Agenda = () => {
               </p>
             </div>
           </div>
-          <ReservasTable cols={cols} values={reservas} onlyDiarias={true} />
+          <ReservasTable
+            cols={cols}
+            values={reservasToday}
+            onlyDiarias={true}
+          />
           <div className="w-full flex justify-center my-12">{MyCalendar()}</div>
         </div>
       </div>

@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
 export const PacienteService = createApi({
   reducerPath: "PacientesService",
   baseQuery: baseQuery,
-  tagTypes: ["Pacientes", "PacienteInfo"],
+  tagTypes: ["Pacientes", "PacienteInfo", "DientesInfo"],
   endpoints: (builder) => ({
     getPacientes: builder.query({
       providesTags: ["Pacientes"],
@@ -34,11 +34,11 @@ export const PacienteService = createApi({
       query: (data: any) => ({
         url: apiRoutes.cambiarEstado(),
         method: "POST",
-        body : {
+        body: {
           pacienteId: data?.pacienteId,
           alta: data?.alta,
           fechaAlta: data?.fechaAlta,
-        }
+        },
       }),
       transformResponse(value) {
         const response = value as PacienteInfoResponse;
@@ -53,7 +53,14 @@ export const PacienteService = createApi({
         return response;
       },
     }),
-
+    getDientesInfo: builder.query({
+      providesTags: ["DientesInfo"],
+      query: (data) => apiRoutes.getDientesInfo(data),
+      transformResponse(value) {
+        const response = value as any[];
+        return response;
+      },
+    }),
     postPaciente: builder.mutation({
       query: (data) => ({
         url: `${apiRoutes.postPaciente()}`,
@@ -78,5 +85,12 @@ export const PacienteService = createApi({
   }),
 });
 
-export const { useGetPacientesQuery, useGetPacienteByIdQuery, useCambiarEstadoMutation} = PacienteService;
-export const { usePostPacienteMutation } = PacienteService;
+export const {
+  useGetPacientesQuery,
+  useGetPacienteInfoQuery,
+  useCambiarEstadoMutation,
+  useGetPacienteByIdQuery,
+  usePostPacienteMutation,
+  useGetDientesInfoQuery,
+} = PacienteService;
+

@@ -128,13 +128,13 @@ const RegisterPage = () => {
   useEffect(() => {
     if (cedula != '') {
       if (data) {
-        const { nombre, apellido, telefono, correo, direccion, fechaNacimiento } = data;
+        const { nombre, apellido, telefono, correo, direccion, fechaDeNacimiento } = data;
         setNombre(nombre);
         setApellido(apellido);
         setTelefono(telefono.toString());
         setCorreo(correo);
         setDireccion(direccion);
-        setFechaNacimiento(dayjs(fechaNacimiento));
+        setFechaNacimiento(dayjs(fechaDeNacimiento));
       } else {
         setErrorNombre(false);
         setErrorApellido(false);

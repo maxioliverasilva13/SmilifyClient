@@ -1,12 +1,20 @@
 import clsx from "clsx";
 import { Reserva } from "src/types/reserva";
 
-import ConfirmationModal from "src/components/Modals/ConfirmationModal";
+import ConfirmModal from "../Modals/Reserva/ConfirmModal";
+import ModificarFechaModal from "../Modals/Reserva/ModificarFechaModal";
+
+import { FaCheck } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
+import { FcCalendar } from "react-icons/fc";
+import { IoLogoWhatsapp } from "react-icons/io";
 
 import moment from "moment";
 import "moment/locale/es"; // Importa el idioma deseado para moment.js
 import { useEffect, useState } from "react";
 moment.locale("es");
+
+import { useCambiarEstadoReservaMutation } from "src/store/services/ReservaService";
 
 type ColItem = {
   key: string;
@@ -22,9 +30,41 @@ interface Props {
 
 const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [date, setDate] = useState(false);
+  const [isAceptarModalOpen, setIsAceptarModalOpen] = useState(false);
+  const [isRechazarModalOpen, setIsRechazarModalOpen] = useState(false);
+  const [isModificarFechaMOpen, setIsModificarFechaMOpen] = useState(false);
+  const [currentReserva, setCurrentReserva] = useState(null);
+  const [successApprove, setSuccessApprove] = useState(false);
+  const [successDelete, setSuccessDelete] = useState(false);
+  const [successModifyDate, setSuccessModifyDate] = useState(false);
+  const [
+    camibarEstado,
+    { isLoading: isLoadingEstado },
+  ] = useCambiarEstadoReservaMutation();
   useEffect(() => {
-    console.log(isModalOpen)
-  }, [isModalOpen]);
+    if (successApprove) {
+      handleAceptarRes(currentReserva);
+      setCurrentReserva(null);
+      setSuccessApprove(false);
+    }
+    if (successDelete) {
+      handleRechazarRes(currentReserva);
+      setCurrentReserva(null);
+      setSuccessDelete(false);
+    }
+    if (successModifyDate) {
+      handleModificarRes(currentReserva);
+      setCurrentReserva(null);
+      setSuccessModifyDate(false);
+    }
+  }, [successApprove, successDelete, successModifyDate]);
+  useEffect(() => {
+    if (isAceptarModalOpen) {
+      setSuccessApprove(false);
+    }
+  }, [isAceptarModalOpen]);
+
   const renderNoResults = () => {
     return (
       <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
@@ -72,16 +112,65 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
 
   function getProperDate(date: number) {
     if (date == null) return null;
-    return moment(new Date(date).toLocaleString(), "M/D/YYYY, HH:mm:ss");
+    return moment(new Date(date));
+  }
+
+  async function handleAceptarRes(item: any) {
+    console.log(item);
+    let dataToSend: any = {
+      id: item?.id,
+      operacion: "aceptar",
+    };
+    await camibarEstado(dataToSend).then((res) => console.log(res));
+  }
+
+  async function handleModificarRes(item: any) {
+    if (date) {
+      let dataToSend: any = {
+        id: item?.id,
+        operacion: "modificar",
+        // fecha: moment(new Date()).format("YYYY-MM-DD HH:mm:ss").toString(),
+        fecha: date,
+      };
+      //console.log(dataToSend)
+      await camibarEstado(dataToSend).then((res) => console.log(res));
+    }
+  }
+
+  async function handleRechazarRes(item: any) {
+    let dataToSend: any = {
+      id: item.id,
+      operacion: "rechazar",
+    };
+    //console.log(dataToSend)
+    await camibarEstado(dataToSend).then((res) => console.log(res));
   }
 
   return (
     <>
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-        text="¿Confirma el iniciar esta consulta?"
-      />
+      {isAceptarModalOpen && (
+        <ConfirmModal
+          setOpen={setIsAceptarModalOpen}
+          setSuccess={setSuccessApprove}
+          title="Confirmar"
+          text="¿Confirma el ACEPTAR esta reserva?"
+        />
+      )}
+      {isRechazarModalOpen && (
+        <ConfirmModal
+          setOpen={setIsRechazarModalOpen}
+          setSuccess={setSuccessDelete}
+          title="Rechazar"
+          text="¿Confirma el RECHAZAR esta reserva?"
+        />
+      )}
+      {isModificarFechaMOpen && (
+        <ModificarFechaModal
+          setOpen={setIsModificarFechaMOpen}
+          setSuccess={setSuccessModifyDate}
+          setDate={setDate}
+        />
+      )}
       <div className="w-full h-auto flex flex-col items-start justify-start">
         {
           <div className="w-full h-auto flex flex-row items-center justify-between row pr-36 xl:pr-52 2xl:pr-64">
@@ -126,20 +215,70 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                     );
                   })}
                   <div className="flex w-3/4 gap-6">
-                    <a href="#" className="decoration-none text-[#84DCCC]">
-                      {onlyDiarias ? "Cancelar" : "Aceptar"}
-                    </a>
-                    {!onlyDiarias ? (
-                      <a href="#" className="decoration-none text-[#84DCCC]">
-                        Modificar
-                      </a>
-                    ) : (
-                      <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="decoration-none uppercase text-[#84DCCC]"
-                      >
-                        Iniciar Consulta
-                      </button>
+                    {onlyDiarias && (
+                      <>
+                        <button className="decoration-none text-[#84DCCC]">
+                          Cancelar
+                        </button>
+                        <button
+                          onClick={() => setIsModalOpen(true)}
+                          className="decoration-none uppercase text-[#84DCCC]"
+                        >
+                          Iniciar Consulta
+                        </button>
+                      </>
+                    )}
+                    {!onlyDiarias && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setCurrentReserva(item);
+                            setIsModificarFechaMOpen(true);
+                          }}
+                          className="decoration-none text-[#84DCCC]"
+                        >
+                          {/* Modificar */}
+                          <FcCalendar title="Modificar fecha" size={28} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCurrentReserva(item);
+                            setIsAceptarModalOpen(true);
+                          }}
+                          className="decoration-none text-green-500"
+                        >
+                          {/* Aceptar */}
+                          <FaCheck title="Aceptar" size={25} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setCurrentReserva(item);
+                            setIsRechazarModalOpen(true);
+                          }}
+                          className="decoration-none text-red-500"
+                        >
+                          {/* Rechazar */}
+                          <ImCross title="Rechazar" size={20} />
+                        </button>
+                        <a
+                          target="_blank"
+                          href={
+                            "https://wa.me/598" +
+                            item?.paciente?.telefono +
+                            "?text=Estimado(a)%20" +
+                            item?.paciente?.nombre +
+                            ",%20es%20un%20placer%20dirigirnos%20hacia%20usted%20desde%20la%20Clínica%20Dental%20Smilify."
+                          }
+                          className="decoration-none text-[#25D366]"
+                        >
+                          <IoLogoWhatsapp
+                            title={
+                              "Mensaje privado a " + item?.paciente?.telefono
+                            }
+                            size={25}
+                          />
+                        </a>
+                      </>
                     )}
                   </div>
                 </div>

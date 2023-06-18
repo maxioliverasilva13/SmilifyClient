@@ -32,3 +32,7 @@ export type PacienteInfoResponse = {
   reservas: any[],
   consultas: any[],
 }
+
+export type Zone = "Izquierda" | "Arriba" | "Derecha" | "Abajo" | "Centro";
+
+
