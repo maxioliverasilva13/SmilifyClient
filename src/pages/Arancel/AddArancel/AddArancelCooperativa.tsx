@@ -11,7 +11,6 @@ import { useGetcategoriasQuery } from 'src/store/services/CategoriaService';
 import { usePostArancelCooperativoMutation } from 'src/store/services/ArancelCooperativoService'
 import useGlobal from 'src/hooks/useGlobal';
 import Alert from '@mui/material/Alert';
-import { ok } from 'assert';
 
 
 const style = {

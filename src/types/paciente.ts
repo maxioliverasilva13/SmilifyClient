@@ -2,11 +2,14 @@
 export type Paciente = {
     nombre: string,
     apellido: string,
-    telefono: number | string,
+    email: string,
+    ocupacion: string,
+    datosClinicos: string,
+    telefono:  string,
     correo: string,
-    cedula: number,
+    cedula: string,
     direccion: string,
-    fechaDeNacimiento: number | null,
+    fechaDeNacimiento: number,
     tieneAlta: boolean,
     fechaDeAlta: number,
 }

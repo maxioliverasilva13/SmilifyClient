@@ -22,6 +22,7 @@ const apiRoutes = {
     getReservasByUserCedula: (dataCedula: any) => `/entities.reserva/validate/${dataCedula}`,
     getReservasByFecha: (data: any) => `/entities.reserva/obtenerFechasByFechas?fecha=${data}`,
     cambiarEstadoReserva: () => `/entities.reserva/cambiarEstado`,
+    editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`
 }
 
 export default apiRoutes;

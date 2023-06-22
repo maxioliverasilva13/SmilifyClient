@@ -60,7 +60,7 @@ export const PacienteService = createApi({
         const response = value as any[];
         return response;
       },
-    }),
+    }), 
     postPaciente: builder.mutation({
       query: (data) => ({
         url: `${apiRoutes.postPaciente()}`,
@@ -74,6 +74,8 @@ export const PacienteService = createApi({
           direccion: data?.direccion,
           activo: false,
           fechaDeNacimiento: data.fechaNacimiento,
+          datosClinicos: data.datosClinicos,
+          ocupacion: data.ocupacion
         },
       }),
       transformResponse(value) {
@@ -81,6 +83,30 @@ export const PacienteService = createApi({
         return response;
       },
     }),
+
+    editarPaciente: builder.mutation({
+      query: (data:any) => ({
+        url: `${apiRoutes.editarPaciente(data?.cedula)}`,
+        method: "PUT",
+        body: {
+          id: data?.cedula,
+          nombre: data?.nombre,
+          apellido: data?.apellido,
+          telefono: data?.telefono,
+          direccion: data?.direccion,
+          correo: data?.correo,
+          fechaDeNacimiento: data.fechaNacimiento,
+          datosClinicos: data.datosClinicos,
+          ocupacion: data.ocupacion,
+          activo: data.activo,
+          tieneAlta: data.tieneAlta
+        },
+      }),
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    })
   }),
 });
 
@@ -91,4 +117,5 @@ export const {
   useGetPacienteByIdQuery,
   usePostPacienteMutation,
   useGetDientesInfoQuery,
+  useEditarPacienteMutation
 } = PacienteService;

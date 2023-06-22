@@ -5,6 +5,7 @@ const appRoutes = {
   index: () => "/",
   pacientePage: (id: any) => "/pacientes/" + id,
   pacientes: () => "/pacientes",
+  agregarPaciente: () => "/pacientes/agregar", 
   addArancelPublico: () => "/Arancel/AddArancel/AddArancelPublico",
   addArancelCooperativa: () => "/Arancel/AddArancel/AddArancelCooperativa",
 };
