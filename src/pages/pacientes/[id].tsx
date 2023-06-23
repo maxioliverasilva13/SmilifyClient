@@ -4,6 +4,7 @@ import Table from "src/components/Table/table";
 import { useEffect, useState } from "react";
 import HistorialClinicoTable from "src/components/HistorialClinicoTable/HistorialClinicoTable";
 import OdontoGrama from "src/components/Odontograma/Odontograma";
+import TratamientosTable from "src/components/TratamientosTable/TratamientosTable";
 import { useRouter } from "next/router";
 import {
   useCambiarEstadoMutation,
@@ -20,11 +21,12 @@ import {
   getProximaConsulta,
 } from "src/utils/paciente";
 import { FcApproval, FcCancel } from "react-icons/fc";
-import { Archivo } from "src/types/paciente";
+import { Archivo, Tratamiento } from "src/types/paciente";
 import AddFileModal from "src/components/Modals/AddFileModal";
 import { FileIcon, defaultStyles } from "react-file-icon";
 import { getFileType } from "src/utils/utils";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
+import { ConsultaExtended } from "src/types/consulta";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -51,6 +53,17 @@ const cols: any = [
   },
 ];
 
+const colsTratamientos: any = [
+  {
+    key: "descripcion",
+    value: "Descripción",
+  },
+  {
+    key: "status",
+    value: "Estado",
+  },
+];
+
 const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
   return (
     <span className="text-[18px] text-[#514D59] font-medium max-w-full overflow-hidden truncate">
@@ -69,8 +82,10 @@ const PacienteInfo = () => {
   const { data, isLoading, refetch } = useGetPacienteInfoQuery(userId, {
     skip: !userId,
   });
-  const [camibarEstado, { isLoading: isLoadingCambiar }] =
-    useCambiarEstadoMutation();
+  const [
+    camibarEstado,
+    { isLoading: isLoadingCambiar },
+  ] = useCambiarEstadoMutation();
 
   useEffect(() => {}, [isLoading]);
 
@@ -85,7 +100,6 @@ const PacienteInfo = () => {
   }
 
   const formattedConsultas = formatConsultas(data?.consultas || []);
-
 
   const handleCambiarEstado = async (alta?: boolean) => {
     let dataToSend: any = {
@@ -109,6 +123,9 @@ const PacienteInfo = () => {
 
   const pacienteInfo = data?.pacienteInfo;
   const tieneAlta = pacienteInfo?.tieneAlta;
+
+  const tratamientos: Tratamiento[] | undefined = data?.tratamientos;
+  const consultas: ConsultaExtended[] | undefined = data?.consultas;
 
   const proximaConsulta = getProximaConsulta(data?.consultas || []);
 
@@ -188,24 +205,18 @@ const PacienteInfo = () => {
           Odontograma
         </span>
         <div className="w-auto h-auto flex flex-col items-start gap-2 my-4 justify-start">
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(255,120,124,0.800)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Mas de 10 datos</span>
-            </div>
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(235,232,54,0.8)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Mas de 5 datos</span>
-            </div>
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(164,255,164,0.5)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Entre 1-5 datos</span>
-            </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(255,120,124,0.800)] rounded-full overflow-hidden"></div>
+            <span>Mas de 10 datos</span>
+          </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(235,232,54,0.8)] rounded-full overflow-hidden"></div>
+            <span>Mas de 5 datos</span>
+          </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(164,255,164,0.5)] rounded-full overflow-hidden"></div>
+            <span>Entre 1-5 datos</span>
+          </div>
         </div>
         <OdontoGrama uid={userId} />
 
@@ -214,31 +225,51 @@ const PacienteInfo = () => {
         </span>
         <HistorialClinicoTable cols={cols} values={formattedConsultas || []} />
       </div>
+      <div className="flex-grow w-full h-auto p-4 bg-white rounded-[12px] shadow-md flex flex-col overflow-hidden">
+        <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
+          Tratamientos
+        </span>
+        {!tratamientos ? (
+          <span className="text-base text-[#514D59] font-normal max-w-[200px] ">
+            Sin tratamientos hasta el momento.
+          </span>
+        ) : (
+          <TratamientosTable
+            cols={colsTratamientos}
+            values={tratamientos}
+            consultas={consultas}
+          />
+        )}
+      </div>
       <div className="flex w-full items-start gap-5 justify-start">
-        <div className="w-[400px] h-[160px] p-4 bg-white rounded-[12px] flex flex-col  overflow-hidden">
+        <div className="w-[400px] h-[160px] p-4 bg-white rounded-[12px] shadow-md flex flex-col overflow-hidden">
           <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
             Proxima consulta
           </span>
+          <span className="text-base text-[#514D59] font-normal max-w-[200px] ">
+            {proximaConsulta
+              ? "Fecha: " + formatDate(proximaConsulta?.reserva?.fecha)
+              : "Sin consultas a futuro"}
+          </span>
           {proximaConsulta && (
-            <abbr
+            <p
               title={proximaConsulta?.descripcion}
               className="text-base decoration-none text-[#514D59] max-h-[70px] truncate font-normal max-w-[200px] "
             >
               {`Descripcion: ${proximaConsulta?.descripcion}`}
-            </abbr>
+            </p>
           )}
-
-          <span className="text-base text-[#514D59] font-normal max-w-[200px] ">
-            {proximaConsulta
-              ? formatDate(proximaConsulta?.reserva?.fecha)
-              : "Sin consultas a futuro"}
-          </span>
         </div>
-        <div className="flex-grow w-full h-auto p-4 bg-white rounded-[12px] flex flex-col  overflow-hidden">
+        <div className="flex-grow w-full h-auto p-4 bg-white rounded-[12px] shadow-md flex flex-col overflow-hidden">
           <span className="text-[#84DCCC] font-semibold text-[26px] my-2">
             Archivos
           </span>
           <div className="w-full flex-grow flex items-center justify-start gap-4 flex-wrap">
+            {!files.length && (
+              <span className="text-base text-[#514D59] font-normal max-w-[250px] ">
+                Sin archivos hasta el momento.
+              </span>
+            )}
             {files?.map((archivo: Archivo) => {
               console.log(getFileType(archivo));
               return (

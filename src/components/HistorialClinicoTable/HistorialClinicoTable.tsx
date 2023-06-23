@@ -50,7 +50,7 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
             return (
               <div
                 className={clsx(
-                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
+                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-medium flex-row items-center justify-between",
                   item?.customWidth &&
                     `${
                       item?.customWidth === "auto"
@@ -65,9 +65,11 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
           })}
         </div>
       }
-      {values && values?.length === 0 && <div className="w-full flex items-center justify-center h-auto p-10">
-        <span>No se encontraron consultas</span>
-        </div>}
+      {values && values?.length === 0 && (
+        <div className="w-full flex items-center justify-center h-auto p-10">
+          <span>No se encontraron consultas</span>
+        </div>
+      )}
       {values
         ? values?.map((item: any, index: number) => {
             const isExpanded = expandedItems?.find(
@@ -75,15 +77,15 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
             )?.isExpanded;
 
             return (
-              <div className="w-full h-auto flex flex-col items-start justify-start">
-                <div
-                  key={`item-${index}`}
-                  className="w-full h-auto flex flex-row items-center justify-between row"
-                >
+              <div
+                className="w-full h-auto flex flex-col items-start justify-start"
+                key={`item-${index}`}
+              >
+                <div className="w-full h-auto flex flex-row items-center justify-between row">
                   {cols?.map((col: ColItem) => {
                     if (col?.key === "customAction") {
                       return (
-                        <div key={`items-${col?.key}`} className="w-[200px]">
+                        <div key={`items-j-${col?.key}`} className="w-[200px]">
                           <DownIcon
                             className={clsx(
                               "font-semibold cursor-pointer text-gray-800 text-[20px] transform transition-all duration-500",
@@ -96,7 +98,7 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
                     }
                     return (
                       <div
-                        key={item?.id}
+                        key={`item-2-${index}`}
                         className={clsx(
                           "max-w-full truncate flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
                           col?.customWidth
@@ -129,8 +131,12 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
                     <div className="text-[#514D59] text-[20px] flex flex-row gap-2 font-medium">
                       Archivos Asociados:
                       <div className="flex flex-col gap-1">
-                        {item?.archivos?.map((file: any)=> {
-                          return <span className="text-[#84DCCC] cursor-pointer text-base font-medium">{file.name}</span>
+                        {item?.archivos?.map((file: any) => {
+                          return (
+                            <span className="text-[#84DCCC] cursor-pointer text-base font-medium">
+                              {file.name}
+                            </span>
+                          );
                         })}
                       </div>
                     </div>
