@@ -232,6 +232,8 @@ const RegisterPage = () => {
         fecha: concatenada,
         estado: "En espera",
         pacienteId: cedula
+      }).catch((err) => {
+        // setErrorExiste(true)
       })
       )
     }

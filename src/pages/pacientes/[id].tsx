@@ -27,6 +27,8 @@ import { FileIcon, defaultStyles } from "react-file-icon";
 import { getFileType } from "src/utils/utils";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import { ConsultaExtended } from "src/types/consulta";
+import appRoutes from "src/utils/appRoutes";
+import useGlobal from "src/hooks/useGlobal";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -98,8 +100,16 @@ const PacienteInfo = () => {
   if (!isLoading && !data) {
     return <Error404 />;
   }
+  
 
-  const formattedConsultas = formatConsultas(data?.consultas || []);
+  const { userInfo } = useGlobal();
+  const precioOrden = userInfo?.configuracion?.precioPorOrden || 0;
+  
+  const formattedConsultas = formatConsultas(data?.consultas || [], precioOrden);
+
+  const handleGoToIniciarConsulta = () => {
+    router.push(`${appRoutes.addConsulta()}?user=${userId}`);
+  };
 
   const handleCambiarEstado = async (alta?: boolean) => {
     let dataToSend: any = {
@@ -141,6 +151,16 @@ const PacienteInfo = () => {
           paciente={pacienteInfo}
         />
       )}
+      <button
+        className={clsx(
+          "px-4 py-2 w-[190px] text-center items-center justify-center flex rounded-md shadow-md text-white",
+          "bg-[#84DCCC]"
+        )}
+        onClick={() => handleGoToIniciarConsulta()}
+      >
+        Agregar Consulta
+      </button>
+
       <div className="w-full h-auto p-4 flex bg-white rounded-lg shadow-md flex flex-col items-start justify-start">
         <div className="w-full h-auto flex items-center justify-between">
           <span className="text-[#84DCCC] font-semibold text-[26px]">
@@ -272,7 +292,6 @@ const PacienteInfo = () => {
               </span>
             )}
             {files?.map((archivo: Archivo) => {
-              console.log(getFileType(archivo));
               return (
                 <div className="w-[90px] h-auto max-w-[90px] overflow-hidden flex flex-col items-center justify-center gap-4">
                   <div className="w-[50px] h-[50px]">

@@ -19,9 +19,12 @@ const apiRoutes = {
     getAranceles: () => "/entities.arancel",
     postPaciente: () => "/entities.paciente",
     postReserva: () => "/entities.reserva",
+    tratamiento: () => "/entities.tratamiento",
+    reservasByPaciente: (pacienteId: string) => `/entities.reserva/reservasByPaciente/${pacienteId}`,
     getReservasByUserCedula: (dataCedula: any) => `/entities.reserva/validate/${dataCedula}`,
     getReservasByFecha: (data: any) => `/entities.reserva/obtenerFechasByFechas?fecha=${data}`,
     cambiarEstadoReserva: () => `/entities.reserva/cambiarEstado`,
+    consultas: () => `/entities.consulta`,
 }
 
 export default apiRoutes;
