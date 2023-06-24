@@ -45,9 +45,9 @@ const Dashboard = () => {
       <Grid item xs={12} md={12}>
         <StatisticsCard />
       </Grid>
-      <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto">
-        <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-xl p-6 flex flex-col items-start justify-start">
-          <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">
+      <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto pb-5">
+        <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-md p-6 flex flex-col items-start justify-start">
+          <div className="w-full flex flex-row items-center justify-start gap-2 pb-[60px]">
             <div className="w-full flex flex-row items-center max-w-full justify-between">
               <p className="text-[28px] font-semibold text-[#84DCCC]">
                 Nuevas solicitudes de turnos

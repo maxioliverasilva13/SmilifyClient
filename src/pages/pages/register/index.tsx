@@ -221,7 +221,7 @@ const RegisterPage = () => {
         telefono: telefono,
         correo: correo,
         direccion: direccion,
-        fechaNacimiento: formatFecha(fechaNacimiento)
+        fechaDeNacimiento: formatFecha(fechaNacimiento)
       }))
     } else {
 

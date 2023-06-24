@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import DownIcon from "mdi-material-ui/ChevronDown";
+import { Consulta } from "src/types/consulta";
 import { useEffect, useState } from "react";
 
 type ColItem = {
@@ -53,12 +54,12 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
         <div className="w-full h-auto flex flex-row items-center justify-between row">
           {cols?.map((item: ColItem, index: number) => {
             if (item?.key === "customAction") {
-              return <div className="w-[200px]"></div>;
+              return <div key={`idx-${index}`} className="w-[200px]"></div>;
             }
             return (
               <div
                 className={clsx(
-                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
+                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-medium flex-row items-center justify-between",
                   item?.customWidth &&
                     `${
                       item?.customWidth === "auto"
@@ -80,20 +81,21 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
       )}
       {values
         ? values?.map((item: any, index: number) => {
+            // TODO: expandedItems llega vacío 
             const isExpanded = expandedItems?.find(
               (i: any) => i?.id === item?.id
             )?.isExpanded;
-
+              console.log("Current item: ", item, " index: ", index, " isExpanded: ", isExpanded);
             return (
-              <div className="w-full h-auto flex flex-col items-start justify-start">
-                <div
-                  key={`item-${index}`}
-                  className="w-full h-auto flex flex-row items-center justify-between row"
-                >
+              <div
+                className="w-full h-auto flex flex-col items-start justify-start"
+                key={`item-${index}`}
+              >
+                <div className="w-full h-auto flex flex-row items-center justify-between row">
                   {cols?.map((col: ColItem) => {
                     if (col?.key === "customAction") {
                       return (
-                        <div key={`items-${col?.key}`} className="w-[200px]">
+                        <div key={`items-j-${col?.key}`} className="w-[200px]">
                           <DownIcon
                             className={clsx(
                               "font-semibold cursor-pointer text-gray-800 text-[20px] transform transition-all duration-500",
@@ -106,7 +108,7 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
                     }
                     return (
                       <div
-                        key={item?.id}
+                        key={`item-2-${index}`}
                         className={clsx(
                           "max-w-full truncate flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
                           col?.customWidth

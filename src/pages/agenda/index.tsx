@@ -19,6 +19,8 @@ import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import ConfirmationModal from "src/components/Modals/ConfirmationModal";
 
 import { useEffect, useState } from "react";
+import { Reserva } from "src/types/reserva";
+import ReservaInfoModal from "src/components/Modals/Reserva/ReservaInfoModal";
 
 const cols: any = [
   {
@@ -55,6 +57,11 @@ const Agenda = () => {
     month: new Date().getMonth() + 1,
     year: new Date().getFullYear(),
   });
+
+  const [openModal, setOpenModal] = useState(false);
+  
+  const [selectedReserva, setSelectedReserva] = useState<Reserva>();
+
   const {
     data: reservasToday,
     isLoading: isReservasTodayLoading,
@@ -81,6 +88,7 @@ const Agenda = () => {
           title: reserva.paciente.nombre + " " + reserva.paciente.apellido,
           start: new Date(reserva.fecha),
           end: moment(new Date(reserva.fecha)).add(30, "minutes").toDate(),
+          reserva: reserva,
         });
       });
 
@@ -92,22 +100,27 @@ const Agenda = () => {
           });
         }
       };
+
+      const handleOpenModal = (eventInfo: any) => {
+        // con un if validar si la fecha de ESA reserva, es menor o mayor a la actual, para saber que datos mostrarle.
+        setOpenModal(true);
+        setSelectedReserva(eventInfo.reserva as Reserva)
+      };
+
       return (
         <div>
           <Calendar
             localizer={localizer}
             events={fechas}
             defaultView="week"
-            // startAccessor="start"
-            // endAccessor="end"
             step={30}
             culture="es"
-            // timeslots={2}
             scrollToTime={moment().hour(8).toDate()}
             messages={customTags}
             onNavigate={handleNavigate}
             // onDoubleClickEvent={(event) => {console.log(event)}}
             onSelectEvent={(event: any) => {
+              handleOpenModal(event);
               console.log(event);
             }}
             style={{ height: 600, width: 800 }}
@@ -119,6 +132,14 @@ const Agenda = () => {
 
   return (
     <ApexChartWrapper className="flex flex-col gap-7">
+      {openModal && (
+        <ReservaInfoModal
+          reserva={selectedReserva}
+          setSelected={setSelectedReserva}
+          setOpen={setOpenModal}
+          title="Información de la Reserva"
+        />
+      )}
       <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto">
         <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-xl p-6 flex flex-col items-start justify-start">
           <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">
