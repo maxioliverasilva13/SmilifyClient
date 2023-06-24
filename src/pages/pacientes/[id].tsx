@@ -122,6 +122,7 @@ const PacienteInfo = () => {
   };
 
   const pacienteInfo = data?.pacienteInfo;
+  console.log("pac info", pacienteInfo);
   const tieneAlta = pacienteInfo?.tieneAlta;
 
   const tratamientos: Tratamiento[] | undefined = data?.tratamientos;
@@ -158,7 +159,7 @@ const PacienteInfo = () => {
             <ItemInfo keyItem="Apellido" value={pacienteInfo?.apellido} />
             <ItemInfo
               keyItem="Edad"
-              value={getEdadbyFecha(pacienteInfo?.fechaDeNacimiento)}
+              value={getEdadbyFecha(pacienteInfo?.fechaDeNacimiento as number)}
             />
             <ItemInfo keyItem="Correo" value={pacienteInfo?.correo} />
             <ItemInfo keyItem="Telefono" value={pacienteInfo?.telefono} />

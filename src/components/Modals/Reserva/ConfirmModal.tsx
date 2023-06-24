@@ -35,7 +35,7 @@ export default function ConfirmModal({
         <div className="flex gap-5">
           <button
             onClick={() => setOpen(false)}
-            className="shadow-md text-white font-semibold rounded-full px-4 py-2 bg-red-500"
+            className="shadow-md text-white font-semibold rounded-md px-4 py-2 bg-red-500"
           >
             Cancelar
           </button>
@@ -44,7 +44,7 @@ export default function ConfirmModal({
               setSuccess(true);
               setOpen(false);
             }}
-            className="shadow-md text-white font-semibold rounded-full px-4 py-2 bg-green-500"
+            className="shadow-md text-white font-semibold rounded-md px-4 py-2 bg-green-500"
           >
             Confirmar
           </button>

@@ -73,7 +73,7 @@ export const PacienteService = createApi({
           correo: data?.correo,
           direccion: data?.direccion,
           activo: false,
-          fechaDeNacimiento: data.fechaNacimiento,
+          fechaDeNacimiento: data.fechaDeNacimiento,
         },
       }),
       transformResponse(value) {

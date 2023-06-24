@@ -98,8 +98,6 @@ export default function ConsultasListModal({ setOpen, title, values }: Props) {
                       className="w-full h-auto flex flex-row items-center justify-between row"
                     >
                       {cols?.map((col: ColItem) => {
-                        console.log("col: ", col);
-                        console.log("item: ", item);
                         if (col?.key === "fecha") {
                           return (
                             <div

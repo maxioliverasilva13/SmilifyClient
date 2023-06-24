@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import DownIcon from "mdi-material-ui/ChevronDown";
 import { useState } from "react";
+import { Consulta } from "src/types/consulta";
 
 type ColItem = {
   key: string;
@@ -45,7 +46,7 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
         <div className="w-full h-auto flex flex-row items-center justify-between row">
           {cols?.map((item: ColItem, index: number) => {
             if (item?.key === "customAction") {
-              return <div className="w-[200px]"></div>;
+              return <div key={`idx-${index}`} className="w-[200px]"></div>;
             }
             return (
               <div
@@ -72,10 +73,11 @@ const HistorialClinicoTable = ({ cols, values }: Props) => {
       )}
       {values
         ? values?.map((item: any, index: number) => {
+            // TODO: expandedItems llega vacío 
             const isExpanded = expandedItems?.find(
               (i: any) => i?.id === item?.id
             )?.isExpanded;
-
+              console.log("Current item: ", item, " index: ", index, " isExpanded: ", isExpanded);
             return (
               <div
                 className="w-full h-auto flex flex-col items-start justify-start"
