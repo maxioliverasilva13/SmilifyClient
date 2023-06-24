@@ -25,6 +25,8 @@ import AddFileModal from "src/components/Modals/AddFileModal";
 import { FileIcon, defaultStyles } from "react-file-icon";
 import { getFileType } from "src/utils/utils";
 import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
+import appRoutes from "src/utils/appRoutes";
+import useGlobal from "src/hooks/useGlobal";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -83,9 +85,16 @@ const PacienteInfo = () => {
   if (!isLoading && !data) {
     return <Error404 />;
   }
+  
 
-  const formattedConsultas = formatConsultas(data?.consultas || []);
+  const { userInfo } = useGlobal();
+  const precioOrden = userInfo?.configuracion?.precioPorOrden || 0;
+  
+  const formattedConsultas = formatConsultas(data?.consultas || [], precioOrden);
 
+  const handleGoToIniciarConsulta = () => {
+    router.push(`${appRoutes.addConsulta()}?user=${userId}`);
+  };
 
   const handleCambiarEstado = async (alta?: boolean) => {
     let dataToSend: any = {
@@ -123,6 +132,16 @@ const PacienteInfo = () => {
           paciente={pacienteInfo}
         />
       )}
+      <button
+        className={clsx(
+          "px-4 py-2 w-[190px] text-center items-center justify-center flex rounded-md shadow-md text-white",
+          "bg-[#84DCCC]"
+        )}
+        onClick={() => handleGoToIniciarConsulta()}
+      >
+        Agregar Consulta
+      </button>
+
       <div className="w-full h-auto p-4 flex bg-white rounded-lg shadow-md flex flex-col items-start justify-start">
         <div className="w-full h-auto flex items-center justify-between">
           <span className="text-[#84DCCC] font-semibold text-[26px]">
@@ -188,24 +207,18 @@ const PacienteInfo = () => {
           Odontograma
         </span>
         <div className="w-auto h-auto flex flex-col items-start gap-2 my-4 justify-start">
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(255,120,124,0.800)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Mas de 10 datos</span>
-            </div>
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(235,232,54,0.8)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Mas de 5 datos</span>
-            </div>
-            <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
-                <div className="w-[25px] h-[25px] bg-[rgba(164,255,164,0.5)] rounded-full overflow-hidden">
-
-                </div>
-                <span>Entre 1-5 datos</span>
-            </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(255,120,124,0.800)] rounded-full overflow-hidden"></div>
+            <span>Mas de 10 datos</span>
+          </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(235,232,54,0.8)] rounded-full overflow-hidden"></div>
+            <span>Mas de 5 datos</span>
+          </div>
+          <div className="w-auto gap-2 h-auto flex flex-row items-center justify-start">
+            <div className="w-[25px] h-[25px] bg-[rgba(164,255,164,0.5)] rounded-full overflow-hidden"></div>
+            <span>Entre 1-5 datos</span>
+          </div>
         </div>
         <OdontoGrama uid={userId} />
 
@@ -240,7 +253,6 @@ const PacienteInfo = () => {
           </span>
           <div className="w-full flex-grow flex items-center justify-start gap-4 flex-wrap">
             {files?.map((archivo: Archivo) => {
-              console.log(getFileType(archivo));
               return (
                 <div className="w-[90px] h-auto max-w-[90px] overflow-hidden flex flex-col items-center justify-center gap-4">
                   <div className="w-[50px] h-[50px]">

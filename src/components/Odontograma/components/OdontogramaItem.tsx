@@ -135,7 +135,7 @@ const OdontoGramaItem = ({
               className={clsx(
                 "triangle cursor-pointer transition-all triangleTop",
                 selectedZone === "Arriba" && "active",
-                getColorsByItem(countData, "Arriba") !== "white" && `border-[${getColorsByItem(countData, "Arriba") }]`
+                getColorsByItem(countData, "Arriba") !== "white" && `border-b-[${getColorsByItem(countData, "Arriba") }]`
               )}
             />
             <div
@@ -143,7 +143,7 @@ const OdontoGramaItem = ({
               className={clsx(
                 "triangle cursor-pointer transition-all triangleBottom",
                 selectedZone === "Abajo" && "active",
-                getColorsByItem(countData, "Abajo") !== "white" && `border-[${getColorsByItem(countData, "Abajo") }]`
+                getColorsByItem(countData, "Abajo") !== "white" && `border-b-[${getColorsByItem(countData, "Abajo") }]`
               )}
             />
           </>
