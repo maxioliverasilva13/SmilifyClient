@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CloseCircleOutline from "mdi-material-ui/CloseCircleOutline";
 import { useGetcategoriasQuery } from "src/store/services/CategoriaService";
-import { usePostArancelPublicoMutation } from "src/store/services/ArancelPublicoService";
+import { usePostArancelCooperativoMutation } from "src/store/services/ArancelCooperativoService";
 import useGlobal from "src/hooks/useGlobal";
 import Alert from "@mui/material/Alert";
 import { ok } from "assert";
@@ -34,13 +34,13 @@ function formatCategorias(categoria: any) {
   }));
 }
 
-interface State {
+interface AracenLab {
   nombre: string;
   idCategoria: string;
   precio: string;
 }
 
-export default function BasicModal() {
+export default function AddArancelLaboratorio() {
   const handleClose = () => {
     push(appRoutes.index());
   };
@@ -48,19 +48,19 @@ export default function BasicModal() {
   const { data } = useGetcategoriasQuery({});
   const categoriaList = formatCategorias(data);
   const [valueA, setValueA] = React.useState("");
-  const [values, setValues] = useState<State>({
+  const [values, setValues] = useState<AracenLab>({
     nombre: "",
     idCategoria: "",
     precio: "",
   });
 
   const handleChange =
-    (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
+    (prop: keyof AracenLab) => (event: ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [prop]: event.target.value });
     };
 
-  const [postArancelPublico, { isLoading: isLoadingSignIn }] =
-    usePostArancelPublicoMutation();
+  const [postArancel, { isLoading: isLoadingSignIn }] =
+    usePostArancelCooperativoMutation();
 
   const [errorNombre, setErrorNombre] = useState<boolean>(false);
   const [errorCosto, setErrorCosto] = useState<boolean>(false);
@@ -70,6 +70,8 @@ export default function BasicModal() {
   const { handleChangeLoading, loading } = useGlobal();
 
   const handleSubmit = async () => {
+    console.log(values);
+
     if (!values.nombre || !values.precio) {
       if (!values.nombre) {
         setErrorNombre(true);
@@ -86,13 +88,15 @@ export default function BasicModal() {
       return;
     }
     handleChangeLoading(true);
-    const resp = await postArancelPublico({
+    const resp = await postArancel({
       nombre: values.nombre,
       idCategoria: values.idCategoria,
       precio: values.precio,
+      type: "Laboratorio",
     });
-    setResponse(resp);
     handleChangeLoading(false);
+   
+    setResponse(resp);
   };
 
   useEffect(() => {
@@ -102,15 +106,12 @@ export default function BasicModal() {
   }, [response]);
 
   function error() {
-    console.log(response);
     if (response?.data?.statusCode === 200) {
       // Mostrar mensaje de éxito
       setAccepted(true);
-      console.log("accepted");
     } else {
       // Mostrar mensaje de error
       setNotAccepted(true);
-      console.log("Notaccepted");
     }
   }
 
@@ -126,17 +127,17 @@ export default function BasicModal() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} className="flex flex-col justify-start h-3/5">
+        <Box sx={style} className="flex flex-col justify-start auto">
           <div className="flex flex-row justify-between">
             <p className="text-[28px] font-semibold text-[#84DCCC]">
-            Agregar Arancel Privado
+            Agregar Arancel Laboratorio
             </p>
             <button onClick={handleClose} style={{ outline: "none" }}>
               <CloseCircleOutline fontSize="large"></CloseCircleOutline>
             </button>
           </div>
 
-          <div className="flex flex-col justify-between items-center mt-5 gap-5 h-3/5 mb-8">
+          <div className="flex flex-col justify-between items-center mt-4 gap-5 h-3/5 mb-8">
             <TextField
               id="outlined-basic"
               label="Nombre"
@@ -161,11 +162,11 @@ export default function BasicModal() {
               onChange={(event: any, newValue: any) => {
                 setValueA(newValue);
                 setValues({ ...values, idCategoria: newValue?.id }); // Asignar el valor de idCat a idCategoria en values
-              }}
+            }}
             />
             <TextField
               id="outlined-basic"
-              label="Costo"
+              label="Precio"
               variant="outlined"
               style={{ width: "75%" }}
               value={values.precio}
@@ -180,6 +181,7 @@ export default function BasicModal() {
                 sx={{ marginBottom: 4 }}
                 severity="success"
                 onClick={Redireccion}
+                className="cursor-pointer"
               >
                 Agregado Coorectamente, presione aqui para volver al inicio
               </Alert>

@@ -8,6 +8,8 @@ const appRoutes = {
   agregarPaciente: () => "/pacientes/agregar", 
   addArancelPublico: () => "/Arancel/AddArancel/AddArancelPublico",
   addArancelCooperativa: () => "/Arancel/AddArancel/AddArancelCooperativa",
+  addArancelLaboratorio: () => "/Arancel/AddArancel/AddArancelLaboratorio",
+  addConsulta: () => "/addConsulta"
 };
 
 export default appRoutes;

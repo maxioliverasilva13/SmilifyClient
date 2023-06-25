@@ -48,6 +48,7 @@ export default function BasicModal() {
 
   const [isHovered, setIsHovered] = useState(false);
   const [isHovered2, setIsHovered2] = useState(false);
+  const [isHovered3, setIsHovered3] = useState(false);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -65,12 +66,24 @@ export default function BasicModal() {
     setIsHovered2(false);
   };
 
+  const handleMouseEnter3 = () => {
+    setIsHovered3(true);
+  };
+
+  const handleMouseLeave3 = () => {
+    setIsHovered3(false);
+  };
+
   const HandleAddArancelPrivado = (data: any) => {
     push(appRoutes.addArancelPublico())
   }
 
   const HandleAddArancelCooperativa = (data: any) => {
     push(appRoutes.addArancelCooperativa())
+  }
+
+  const HandleAddArancelLab = (data: any) => {
+    push(appRoutes.addArancelLaboratorio())
   }
 
   return (
@@ -92,16 +105,22 @@ export default function BasicModal() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={HandleAddArancelPrivado}
-            >Item Arancel Privado</button>
+            >Arancel Privado</button>
           </div>
-
           <Divider></Divider>
           <button
             style={isHovered2 ? buttonHoverStyle : buttonStyle}
             onMouseEnter={handleMouseEnter2}
             onMouseLeave={handleMouseLeave2}
             onClick={HandleAddArancelCooperativa}
-          >Item Arancel Cooperativa</button>
+          >Arancel Colevtivizado</button>
+          <Divider></Divider>
+          <button
+            style={isHovered3 ? buttonHoverStyle : buttonStyle}
+            onMouseEnter={handleMouseEnter3}
+            onMouseLeave={handleMouseLeave3}
+            onClick={HandleAddArancelLab}
+          >Arancel Laboratorio</button>
           <Divider></Divider>
         </Box>
       </Modal>

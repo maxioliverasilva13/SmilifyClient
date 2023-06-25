@@ -21,7 +21,20 @@ export const CategoriaService = createApi({
         return response;
       },
     }),
+    createCategoria: builder.mutation({
+      query: data => {
+        return {
+          url: apiRoutes.createCategoria(),
+          method: "POST",
+          body: data,
+        }
+      },
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
   }),
 });
 
-export const {useGetcategoriasQuery} = CategoriaService;
+export const {useGetcategoriasQuery, useCreateCategoriaMutation} = CategoriaService;
