@@ -6,6 +6,7 @@ const apiRoutes = {
     cambiarEstado: () => `/entities.paciente/cambiarEstado`,
     getPacientesById: (data: any) => `/entities.paciente/${data}`,
     getCategorias: () => "/entities.categoriaarancel",
+    createCategoria: () => "/entities.categoriaarancel/create",
     postArancelPublico: () => "/entities.arancel/create",
     postArancelCooperativo: () => "/entities.arancel/create",
     getReservas: () => "/entities.reserva",

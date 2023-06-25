@@ -7,6 +7,7 @@ const appRoutes = {
   pacientes: () => "/pacientes",
   addArancelPublico: () => "/Arancel/AddArancel/AddArancelPublico",
   addArancelCooperativa: () => "/Arancel/AddArancel/AddArancelCooperativa",
+  addArancelLaboratorio: () => "/Arancel/AddArancel/AddArancelLaboratorio",
   addConsulta: () => "/addConsulta"
 };
 

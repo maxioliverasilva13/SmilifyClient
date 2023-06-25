@@ -82,6 +82,10 @@ export default function BasicModal() {
     push(appRoutes.addArancelCooperativa())
   }
 
+  const HandleAddArancelLab = (data: any) => {
+    push(appRoutes.addArancelLaboratorio())
+  }
+
   return (
     <div>
       <Modal
@@ -101,7 +105,7 @@ export default function BasicModal() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               onClick={HandleAddArancelPrivado}
-            >Item Arancel Privado</button>
+            >Arancel Privado</button>
           </div>
           <Divider></Divider>
           <button
@@ -109,14 +113,14 @@ export default function BasicModal() {
             onMouseEnter={handleMouseEnter2}
             onMouseLeave={handleMouseLeave2}
             onClick={HandleAddArancelCooperativa}
-          >Item Arancel Colevtivizado</button>
+          >Arancel Colevtivizado</button>
           <Divider></Divider>
           <button
             style={isHovered3 ? buttonHoverStyle : buttonStyle}
             onMouseEnter={handleMouseEnter3}
             onMouseLeave={handleMouseLeave3}
-            onClick={HandleAddArancelCooperativa}
-          >Item Arancel Laboratorio</button>
+            onClick={HandleAddArancelLab}
+          >Arancel Laboratorio</button>
           <Divider></Divider>
         </Box>
       </Modal>

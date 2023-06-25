@@ -56,6 +56,14 @@ const navigation = (): VerticalNavItemsType => {
       path: '/Modal/ModalConsultaAgregar',
       icon: ToolTipPlus,
     },
+    {
+      sectionTitle: 'Categorias Arancel'
+    },
+    {
+      title: 'Agregar',
+      path: '/Categorias/AddCategoriaArancel',
+      icon: ToolTipPlus,
+    },
   ]
 
 }
