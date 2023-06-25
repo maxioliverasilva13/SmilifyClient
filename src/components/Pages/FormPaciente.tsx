@@ -95,7 +95,6 @@ export default function FormPaciente(props: { formValues: any,  action : Action}
         setValues({ ...values, fechaNacimiento: moment(value.$d).format("DD/MM/YYYY") })
     }
 
-   
 
 
     const validarFormulario = () => {
@@ -255,7 +254,6 @@ export default function FormPaciente(props: { formValues: any,  action : Action}
                             </div>
                             <TextField id="outlined-basic" label="Cedula" variant="outlined" className='mb-4'
                                 disabled={ props.action == Action.EDIT}
-
                                 value={values.cedula} onChange={handleChange('cedula')}
                                 style={{width: '50%'}}
                             />
