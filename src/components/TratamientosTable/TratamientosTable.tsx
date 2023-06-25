@@ -28,7 +28,7 @@ const TratamientosTable = ({ cols, values, consultas }: Props) => {
 
   const handleClick = (tratamientoId: number) => {
     const consultasFiltradas = consultas?.filter(
-      (consulta) => consulta?.tratamiento.id === tratamientoId
+      (consulta) => consulta?.tratamiento?.id === tratamientoId
     );
     setConsultasTratamiento(consultasFiltradas);
     setOpenModal((current) => !current);
