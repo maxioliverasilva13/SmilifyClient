@@ -69,7 +69,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
     return (
       <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
         <span className="text-[#514D59] font-medium py-8">
-          No se encontraron resultados
+          No se encontraron reservas para el día de hoy.
         </span>
       </div>
     );
@@ -262,13 +262,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                         </button>
                         <a
                           target="_blank"
-                          href={
-                            "https://wa.me/598" +
-                            item?.paciente?.telefono +
-                            "?text=Estimado(a)%20" +
-                            item?.paciente?.nombre +
-                            ",%20es%20un%20placer%20dirigirnos%20hacia%20usted%20desde%20la%20Clínica%20Dental%20Smilify."
-                          }
+                          href={`https://wa.me/598${item?.paciente?.telefono}?text=Estimado(a)%20${item?.paciente?.nombre},%20es%20un%20placer%20dirigirnos%20hacia%20usted%20desde%20la%20Clínica%20Dental%20Smilify.`}
                           className="decoration-none text-[#25D366]"
                         >
                           <IoLogoWhatsapp

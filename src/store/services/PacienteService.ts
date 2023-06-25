@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
 export const PacienteService = createApi({
   reducerPath: "PacientesService",
   baseQuery: baseQuery,
-  tagTypes: ["Pacientes", "PacienteInfo", "DientesInfo"],
+  tagTypes: ["Pacientes", "PacienteInfo", "DientesInfo", "ConstulasByPaciente"],
   endpoints: (builder) => ({
     getPacientes: builder.query({
       providesTags: ["Pacientes"],
@@ -27,6 +27,14 @@ export const PacienteService = createApi({
       transformResponse(value) {
         const response = value as PacienteInfoResponse;
         return response;
+      },
+    }),
+    getReservasByPaciente: builder.query({
+      providesTags: ["ConstulasByPaciente"],
+      query: (pacienteId: any) => apiRoutes.reservasByPaciente(pacienteId),
+      transformResponse(value) {
+        const response = value as any[];
+        return response || [];
       },
     }),
     cambiarEstado: builder.mutation({
@@ -76,8 +84,37 @@ export const PacienteService = createApi({
           fechaDeNacimiento: data.fechaNacimiento,
           datosClinicos: data.datosClinicos,
           ocupacion: data.ocupacion
+
         },
       }),
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
+    createTratamiento: builder.mutation({
+      query: (data) => ({
+        url: `${apiRoutes.tratamiento()}`,
+        method: "POST",
+        body: {
+          paciente_id: data?.paciente_id,
+          descripcion: data?.descripcion,
+
+        },
+      }),
+      invalidatesTags: ["Pacientes"],
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
+    createConsulta: builder.mutation({
+      query: (data) => ({
+        url: `${apiRoutes.consultas()}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["PacienteInfo", "ConstulasByPaciente"],
       transformResponse(value) {
         const response = value;
         return response;
@@ -118,4 +155,8 @@ export const {
   usePostPacienteMutation,
   useGetDientesInfoQuery,
   useEditarPacienteMutation
+  useCreateTratamientoMutation,
+  useGetReservasByPacienteQuery,
+  useCreateConsultaMutation,
+  
 } = PacienteService;

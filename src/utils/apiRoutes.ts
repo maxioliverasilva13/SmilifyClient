@@ -6,6 +6,7 @@ const apiRoutes = {
     cambiarEstado: () => `/entities.paciente/cambiarEstado`,
     getPacientesById: (data: any) => `/entities.paciente/${data}`,
     getCategorias: () => "/entities.categoriaarancel",
+    createCategoria: () => "/entities.categoriaarancel/create",
     postArancelPublico: () => "/entities.arancel/create",
     postArancelCooperativo: () => "/entities.arancel/create",
     getReservas: () => "/entities.reserva",
@@ -19,10 +20,13 @@ const apiRoutes = {
     getAranceles: () => "/entities.arancel",
     postPaciente: () => "/entities.paciente",
     postReserva: () => "/entities.reserva",
+    tratamiento: () => "/entities.tratamiento",
+    reservasByPaciente: (pacienteId: string) => `/entities.reserva/reservasByPaciente/${pacienteId}`,
     getReservasByUserCedula: (dataCedula: any) => `/entities.reserva/validate/${dataCedula}`,
     getReservasByFecha: (data: any) => `/entities.reserva/obtenerFechasByFechas?fecha=${data}`,
     cambiarEstadoReserva: () => `/entities.reserva/cambiarEstado`,
-    editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`
+    editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`,
+    consultas: () => `/entities.consulta`,
 }
 
 export default apiRoutes;

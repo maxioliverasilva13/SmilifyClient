@@ -18,7 +18,7 @@ export const ArancelCooperativoService = createApi({
         return {
           url: apiRoutes.postArancelCooperativo(),
           method: "POST",
-          body: { nombre: data?.nombre, categoriaId: data?.idCategoria, cantOrdenes: data?.precio, type: "Colectivo" },
+          body: { nombre: data?.nombre, categoriaId: data?.idCategoria, cantOrdenes: data?.precio, type: data?.type},
         };
       },
       transformResponse(value) {

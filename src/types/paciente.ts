@@ -1,5 +1,6 @@
 
 export type Paciente = {
+    id?: string | any,
     nombre: string,
     apellido: string,
     email: string,
@@ -10,8 +11,10 @@ export type Paciente = {
     cedula: string,
     direccion: string,
     fechaDeNacimiento: number,
+    fechaDeNacimiento: number | string | null,
     tieneAlta: boolean,
     fechaDeAlta: number,
+    tratamientos: any[],
 }
 
 export type Archivo = {

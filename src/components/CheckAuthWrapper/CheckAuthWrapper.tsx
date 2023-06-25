@@ -47,11 +47,14 @@ const CheckAuthWrapper = ({children}: props) => {
         }
     }, [isError, loading])
 
-    if ((isLoading || (isError && !isInPublicPath)) || loading) {
+    if (((isError && !isInPublicPath))) {
         return <GlobalSpinner />
     }
 
-    return children;
+    return <>
+        {isLoading || loading && <GlobalSpinner />}
+        {children}
+    </>;
 }
 
 

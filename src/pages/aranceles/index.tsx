@@ -13,7 +13,7 @@ const cols: any = [
     key: "nombre",
     value: "Nombre",
   },
- 
+
   {
     key: "precio",
     value: "Precio",
@@ -22,21 +22,20 @@ const cols: any = [
   {
     key: "nombreCategoria",
     value: "Prestación",
-  }
- 
+  },
 ];
 
-const Aranceles= () => {
+const Aranceles = () => {
   const { data: aranceles, isLoading } = useGetArancelesQuery({});
- // const [query, setQuery] = useState("");
- // const [filterData, setFilterData] = useState<any>([]);
- // const { push } = useRouter();
+  // const [query, setQuery] = useState("");
+  // const [filterData, setFilterData] = useState<any>([]);
+  // const { push } = useRouter();
 
  const [tipoArancelSelected,setTipoArancelSelected] = useState(TipoArancel.Privado);
  const [ filterData , setFilterData ] = useState([]);
  const [search, setSearch] = useState('');
 
- const dataToUse =  aranceles;
+  const dataToUse = aranceles;
 
 
 
