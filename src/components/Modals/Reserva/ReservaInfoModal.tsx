@@ -13,6 +13,8 @@ import { IoLogoWhatsapp } from "react-icons/io";
 import ConfirmModal from "./ConfirmModal";
 
 import { useCambiarEstadoReservaMutation } from "src/store/services/ReservaService";
+import { useRouter } from "next/router";
+import appRoutes from "src/utils/appRoutes";
 
 interface Props {
   setOpen: Function;
@@ -27,6 +29,7 @@ export default function ReservaInfoModal({
   reserva,
   setSelected,
 }: Props) {
+  const router = useRouter();
   const handleClose = () => {
     setOpen(false);
     setSelected(undefined);
@@ -133,6 +136,7 @@ export default function ReservaInfoModal({
           <div className="flex gap-5">
             <button
               onClick={() => {
+                router.push(`${appRoutes.addConsulta()}?user=${reserva?.paciente?.id}`)
                 // TODO: Funcionalidad iniciar consulta
               }}
               className="shadow-md text-white font-semibold rounded-md px-4 py-2 bg-blue-500"

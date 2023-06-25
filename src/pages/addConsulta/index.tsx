@@ -25,10 +25,14 @@ import { getCostoArancel } from "src/utils/utils";
 import Input from "@mui/joy/Input";
 import moment from "moment";
 import "moment/locale/es";
+import { useRouter } from "next/router";
 moment.locale("es");
 
 const AddConsulta = () => {
-  const [selectedPaciente, setSelectedpaciente] = useState(null);
+  const router = useRouter();
+  const query = router?.query;
+  const userId = query?.user;
+  const [selectedPaciente, setSelectedpaciente] = useState(userId);
   const [selectedArancel, setSelectedArancel] = useState(null);
   const [selectedReserva, setSelectedReserva] = useState<string | null>(null);
   const [asignarTratamiento, setAsignarTratamiento] = useState(false);
@@ -256,7 +260,7 @@ const AddConsulta = () => {
                 })
               ) : (
                 <MenuItem disabled value="">
-                  No hay tratamientos disponibles
+                  No hay reservas disponibles
                 </MenuItem>
               )}
             </Select>
@@ -422,7 +426,7 @@ const AddConsulta = () => {
                 })
               ) : (
                 <MenuItem disabled value="">
-                  No hay tratamientos disponibles
+                  No hay prestaciones disponibles
                 </MenuItem>
               )}
             </Select>
