@@ -214,7 +214,7 @@ export default function FormPaciente(props: { formValues: any,  action : Action}
                 return;
             }
             const { data } = res;
-            toast.success(data.message); 
+            toast.success("Paciente creado correctamente"); 
             if(props.action == Action.CREATE){
                 resetForm(); 
             }
