@@ -33,10 +33,18 @@ export const UserService = createApi({
         return response;
       },
     }),
+    estadisticas: builder.query({
+      query: apiRoutes.estadisticas,
+      transformResponse(value:any) {
+        const response = value;
+        return response;
+      },
+    }),
   }),
 });
 
 export const {
   useSignInMutation,
   useCurrentUserQuery,
+  useEstadisticasQuery
 } = UserService;
