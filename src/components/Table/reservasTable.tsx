@@ -245,7 +245,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                             setCurrentReserva(item);
                             setIsAceptarModalOpen(true);
                           }}
-                          className="decoration-none text-green-500"
+                          className="decoration-none text-[#84DCCC]"
                         >
                           {/* Aceptar */}
                           <FaCheck title="Aceptar" size={25} />
@@ -255,7 +255,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                             setCurrentReserva(item);
                             setIsRechazarModalOpen(true);
                           }}
-                          className="decoration-none text-red-500"
+                          className="decoration-none text-[#FF8C8C]"
                         >
                           {/* Rechazar */}
                           <ImCross title="Rechazar" size={20} />

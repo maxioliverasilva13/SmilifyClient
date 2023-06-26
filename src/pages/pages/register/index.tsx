@@ -389,7 +389,7 @@ const RegisterPage = () => {
                   value={hora}
                   onChange={handleTimeChange}
                 >
-                  {!hora ? (
+                  {filterTimeSlots().length > 0 ? (
                     filterTimeSlots().map((time) => (
                       <MenuItem key={time} value={time}>
                         {time}
