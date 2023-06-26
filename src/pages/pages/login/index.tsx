@@ -210,7 +210,9 @@ const LoginPage = () => {
               fullWidth
               size="large"
               variant="contained"
-              sx={{ marginBottom: 7 }}
+              sx={{ marginBottom: 7 ,backgroundColor: '#6fbfb6', '&:hover': {
+                backgroundColor: '#6fbfc3',
+              }}}
             >
               Iniciar Sesion
             </Button>
@@ -219,7 +221,7 @@ const LoginPage = () => {
       </Card>
       <Link passHref href={appRoutes.register()}>
         <LinkStyled
-          className="w-[400px] flex flex-row items-center justify-end"
+          className="w-[400px] flex flex-row items-center justify-end text-[#6fbfb6]"
         >
           Agenda
         </LinkStyled>

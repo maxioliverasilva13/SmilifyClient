@@ -27,6 +27,7 @@ const apiRoutes = {
     cambiarEstadoReserva: () => `/entities.reserva/cambiarEstado`,
     editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`,
     consultas: () => `/entities.consulta`,
+    estadisticas: () => `entities.usuario/estadisticas`
 }
 
 export default apiRoutes;

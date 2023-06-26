@@ -9,6 +9,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import moment from "moment";
+import { useGetReservasByFechaQuery } from "src/store/services/ReservaService";
 
 interface Props {
   setOpen: Function;
@@ -22,7 +23,10 @@ export default function ModificarFechaModal({
   setSuccess,
   setDate,
 }: Props) {
-  const [fecha, setFecha] = useState<any>(dayjs().add(1, "day"));
+
+  const tomorrow = dayjs().add(1, 'day');
+  const [fecha, setFecha] = useState(tomorrow);
+  const { data: fechas } = useGetReservasByFechaQuery(fecha.format("YYYY-MM-DD"));
   const [hora, setHora] = useState(null);
   const [errorHora, setErrorHora] = useState(false);
   const timeSlots = Array.from(new Array(20)).map((_, index) => {
@@ -39,26 +43,51 @@ export default function ModificarFechaModal({
     setOpen(false);
   };
   const handleTimeChange = (event: any) => {
+    setErrorHora(false);
     setHora(event.target.value.toString());
   };
   const handleDateChange = (newDate: any) => {
     setFecha(newDate);
+    console.log(fecha.format("YYYY-MM-DD"))
   };
   const handleConfirm = () => {
     if (hora === null) {
       setErrorHora(true);
       return;
     }
-      setErrorHora(true);
-      setSuccess(true);
-      setOpen(false);
-      setDate(moment(new Date(fecha)).format("YYYY-MM-DD") + " " + hora);
+    setErrorHora(true);
+    setSuccess(true);
+    setOpen(false);
+    setDate(moment(new Date(fecha)).format("YYYY-MM-DD") + " " + hora);
   };
   useEffect(() => {
-    console.log(timeSlots);
-  }, []);
+    console.log(hora);
+  }, [hora]);
+
+  const filterTimeSlots = () => {
+    const formattedDates = formatDates();
+
+    const filteredTimeSlots = timeSlots.filter(timeSlot => {
+      return !formattedDates.includes(timeSlot);
+    });
+
+    return filteredTimeSlots;
+  };
+
+  const formatDates = () => {
+    if (fechas) {
+      const formattedDates = fechas.map((Reserva) => {
+        const dateObject = new Date(Reserva);
+        const formattedDate = moment(dateObject).format('HH:mm');
+        return formattedDate;
+      });
+      return formattedDates;
+    }
+    return [];
+  };
+
   return (
-    <div className="appearsAnimation backdrop-blur-md w-screen z-[100] h-screen fixed top-0 left-0 flex flex-col items-center justify-center">
+    <div className="appearsAnimation backdrop-blur-md w-screen z-[1200] h-screen fixed top-0 left-0 flex flex-col items-center justify-center">
       <div className="md:w-[640px] h-auto p-[20px] shadow-xs border border-gray-300 rounded-lg bg-white flex flex-col items-center gap-y-8 relative">
         <GrClose
           size={20}
@@ -90,6 +119,11 @@ export default function ModificarFechaModal({
             <InputLabel id="combo-box-label">Hora</InputLabel>
 
             <Select
+              MenuProps={{
+                style: {
+                  zIndex: 1201, 
+                },
+              }}
               error={errorHora}
               label="Hora"
               labelId="combo-box-label"
@@ -97,24 +131,30 @@ export default function ModificarFechaModal({
               value={hora}
               onChange={handleTimeChange}
             >
-              {timeSlots.map((time) => (
-                <MenuItem key={time} value={time}>
-                  {time}
+              {filterTimeSlots().length > 0 ? (
+                filterTimeSlots().map((time) => (
+                  <MenuItem key={time} value={time}>
+                    {time}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled value="">
+                  No hay turnos disponibles para este día
                 </MenuItem>
-              ))}
+              )}
             </Select>
           </FormControl>
         </div>
         <div className="flex gap-5">
           <button
             onClick={() => setOpen(false)}
-            className="shadow-md text-white font-semibold rounded-full px-4 py-2 bg-red-500"
+            className="shadow-md text-white font-semibold rounded-md px-4 py-2 bg-[#FF8C8C]"
           >
             Cancelar
           </button>
           <button
             onClick={handleConfirm}
-            className="shadow-md text-white font-semibold rounded-full px-4 py-2 bg-green-500"
+            className="shadow-md text-white font-semibold rounded-md px-4 py-2 bg-[#84DCCC]"
           >
             Confirmar
           </button>
