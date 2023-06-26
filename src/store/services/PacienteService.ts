@@ -154,7 +154,7 @@ export const {
   useGetPacienteByIdQuery,
   usePostPacienteMutation,
   useGetDientesInfoQuery,
-  useEditarPacienteMutation
+  useEditarPacienteMutation,
   useCreateTratamientoMutation,
   useGetReservasByPacienteQuery,
   useCreateConsultaMutation,

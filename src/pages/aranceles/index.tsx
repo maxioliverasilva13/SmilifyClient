@@ -50,12 +50,12 @@ const Aranceles = () => {
             return {
               ...item,
               precio: item?.cantOrdenes,
-              nombreCategoria: item?.type,
+              nombreCategoria: item?.nombreCategoria,
             };
           }
           return {
             ...item,
-            nombreCategoria: item?.type,
+            nombreCategoria: item?.nombreCategoria,
           };
         })
       );
@@ -109,7 +109,7 @@ const Aranceles = () => {
                 >
                   <span
                     className={
-                      "text-xl	 inline-block p-4 transition-all border-b-2 hover:text-blue-600  rounded-t-lg " +
+                      "text-xl inline-block transition-all p-4 border-b-2 rounded-t-lg hover:text-blue-600 hover:border-gray-300 " +
                       (tipoArancelSelected === TipoArancel.Colectivo
                         ? "border-blue-600 text-blue-600"
                         : "border-transparent")
@@ -127,7 +127,7 @@ const Aranceles = () => {
                 >
                   <span
                     className={
-                      "text-xl	 inline-block p-4 transition-all border-b-2 hover:text-blue-600 rounded-t-lg " +
+                      "text-xl inline-block transition-all p-4 border-b-2 rounded-t-lg hover:text-blue-600 hover:border-gray-300 " +
                       (tipoArancelSelected === TipoArancel.Laboratorio
                         ? "border-blue-600 text-blue-600"
                         : "border-transparent")
@@ -159,7 +159,7 @@ const Aranceles = () => {
             },
             {
               key: "precio",
-              value: tipoArancelSelected === TipoArancel.Colectivo ? "Cant. Ordenes" : "Precio",
+              value: "Precio",
             },
             {
               key: "nombreCategoria",
