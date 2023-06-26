@@ -7,11 +7,15 @@ import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CloseCircleOutline from "mdi-material-ui/CloseCircleOutline";
-import { useGetcategoriasQuery } from "src/store/services/CategoriaService";
-import { usePostArancelCooperativoMutation } from "src/store/services/ArancelCooperativoService";
-import useGlobal from "src/hooks/useGlobal";
-import Alert from "@mui/material/Alert";
+
+
+import { useGetcategoriasQuery } from 'src/store/services/CategoriaService';
+import { usePostArancelCooperativoMutation } from 'src/store/services/ArancelCooperativoService'
+import useGlobal from 'src/hooks/useGlobal';
+import Alert from '@mui/material/Alert';
 import { ok } from "assert";
+
+
 
 const style = {
   position: "absolute" as "absolute",

@@ -41,7 +41,7 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Agregar',
       icon: ToolTipPlus,
-      path: '/addPaciente',
+      path: '/pacientes/agregar',
     },
     {
       sectionTitle: 'Aranceles'
