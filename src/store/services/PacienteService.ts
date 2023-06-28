@@ -113,7 +113,7 @@ export const PacienteService = createApi({
         url: `${apiRoutes.finalizarTratamiento(tratamientoId)}`,
         method: "PUT",
       }),
-      invalidatesTags: ["Tratamientos"],
+      invalidatesTags: ["PacienteInfo", "Tratamientos"],
       transformResponse(value) {
         const response = value;
         return response;
@@ -161,6 +161,7 @@ export const PacienteService = createApi({
 export const {
   useGetPacientesQuery,
   useGetPacienteInfoQuery,
+  useLazyGetPacienteInfoQuery,
   useCambiarEstadoMutation,
   useGetPacienteByIdQuery,
   usePostPacienteMutation,
