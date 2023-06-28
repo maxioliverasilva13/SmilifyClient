@@ -5,8 +5,7 @@ import { getCostoArancel } from "./utils";
 export const getEdadbyFecha = (fecha: number | null | undefined): number => {
   try {
     if (!fecha) return 0;
-
-    const nacimiento = dayjs(fecha).format("DD/MM/YYYY");
+    const nacimiento = dayjs(fecha);
     const now = dayjs();
     const edad = now.diff(nacimiento, "years");
     return edad;
