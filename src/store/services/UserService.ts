@@ -33,7 +33,6 @@ export const UserService = createApi({
         return response;
       },
     }),
-
     editMeInfo: builder.mutation({
       query: data => {
         return {
