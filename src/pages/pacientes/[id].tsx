@@ -64,6 +64,10 @@ const colsTratamientos: any = [
     key: "status",
     value: "Estado",
   },
+  {
+    key: "acciones",
+    value: "Acciones",
+  },
 ];
 
 const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
@@ -141,7 +145,7 @@ const PacienteInfo = () => {
   const proximaConsulta = getProximaConsulta(data?.consultas || []);
 
   return (
-    <div className="w-full h-full flex-grow flex flex-col py-20 gap-5 overflow-auto">
+    <div className="w-full h-full flex-grow flex flex-col py-5 gap-5 overflow-auto">
       {(isLoading || isLoadingCambiar) && <GlobalSpinner />}
       {pacienteInfo && (
         <AddFileModal

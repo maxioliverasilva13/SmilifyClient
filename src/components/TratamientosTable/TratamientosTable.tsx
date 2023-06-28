@@ -1,12 +1,15 @@
 import { current } from "@reduxjs/toolkit";
 import clsx from "clsx";
 import DownIcon from "mdi-material-ui/ChevronDown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ConsultasListModal from "./ConsultasListModal";
 import { ConsultaExtended } from "src/types/consulta";
 import { Tratamiento } from "src/types/paciente";
 import CustomDescripcion from "../Odontograma/components/CustomDescripcion";
+import { PiFlagCheckeredDuotone } from "react-icons/pi";
+import ConfirmModal from "../Modals/Reserva/ConfirmModal";
+import { useFinalizarTratamientoMutation } from "src/store/services/PacienteService";
 
 type ColItem = {
   key: string;
@@ -22,9 +25,23 @@ interface Props {
 
 const TratamientosTable = ({ cols, values, consultas }: Props) => {
   const [openModal, setOpenModal] = useState(false);
+  const [finalizarTratModalOpen, setFinalizarTratModalOpen] = useState(false);
+  const [successFinalizar, setSuccessFinalizar] = useState(false);
+  const [selectedTratamiento, setSelectedTratamiento] = useState<Tratamiento>();
   const [consultasTratamiento, setConsultasTratamiento] = useState<
     ConsultaExtended[]
   >();
+
+  const [finalizarSelectedTratamiento] = useFinalizarTratamientoMutation();
+
+  useEffect(() => {
+    if (successFinalizar) {
+      finalizarSelectedTratamiento(selectedTratamiento?.id);
+      setSuccessFinalizar(false);
+      setOpenModal(false);
+      setSelectedTratamiento(undefined);
+    }
+  }, [successFinalizar]);
 
   const handleClick = (tratamientoId: number) => {
     const consultasFiltradas = consultas?.filter(
@@ -44,6 +61,14 @@ const TratamientosTable = ({ cols, values, consultas }: Props) => {
 
   return (
     <>
+      {finalizarTratModalOpen && (
+        <ConfirmModal
+          setOpen={setFinalizarTratModalOpen}
+          setSuccess={setSuccessFinalizar}
+          title="Finalizar Tratamiento"
+          text="¿Confirma el finalizar este tratamiento?"
+        />
+      )}
       {openModal && (
         <ConsultasListModal
           values={formatVales}
@@ -55,7 +80,7 @@ const TratamientosTable = ({ cols, values, consultas }: Props) => {
         {
           <div className="w-full h-auto flex flex-row items-center justify-between row">
             {cols?.map((item: ColItem, index: number) => {
-              if (item?.key === "customAction") {
+              if (item?.key === "acciones") {
                 return <div className="w-[200px]"></div>;
               }
               return (
@@ -93,6 +118,33 @@ const TratamientosTable = ({ cols, values, consultas }: Props) => {
                 >
                   <div className="w-full h-auto flex flex-row items-center justify-between row">
                     {cols?.map((col: ColItem) => {
+                      if (col?.key === "acciones") {
+                        return (
+                          <div
+                            key={`items-j-${col?.key}`}
+                            className="w-[200px]"
+                          >
+                            {item?.status !== "Finalizado" ? (
+                              <button
+                                onClick={() => {
+                                  console.log("item on click", item);
+                                  setSelectedTratamiento(item as Tratamiento);
+                                  setFinalizarTratModalOpen(true);
+                                }}
+                                className="decoration-none text-blue-500"
+                              >
+                                {/* Rechazar */}
+                                <PiFlagCheckeredDuotone
+                                  title="Finalizar tratamiento"
+                                  size={25}
+                                />
+                              </button>
+                            ) : (
+                              <p>-</p>
+                            )}
+                          </div>
+                        );
+                      }
                       return (
                         <div
                           key={`item-r-${index}`}
