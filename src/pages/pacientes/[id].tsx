@@ -30,6 +30,7 @@ import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import { ConsultaExtended } from "src/types/consulta";
 import appRoutes from "src/utils/appRoutes";
 import useGlobal from "src/hooks/useGlobal";
+import AddTratamientoModal from "src/components/AddTratamientoModal/AddTratamientoModal";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -87,6 +88,7 @@ const PacienteInfo = () => {
 
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const [files, setFiles] = useState<Archivo[]>([]);
+  const [openAddTratamientoModal, setOpenAddTratamientoModal] = useState(false);
   const [getPacienteInfo] = useLazyGetPacienteInfoQuery();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -98,7 +100,6 @@ const PacienteInfo = () => {
   const handleLoadPacienteInfo = async () => {
     const response = await getPacienteInfo(userId);
     setData(response.data);
-    console.log("resDAta", response.data);
     setIsLoading(false);
   };
 
@@ -147,7 +148,6 @@ const PacienteInfo = () => {
   };
 
   const pacienteInfo = data?.pacienteInfo;
-  console.log("pac info", pacienteInfo);
   const tieneAlta = pacienteInfo?.tieneAlta;
 
   const tratamientos: Tratamiento[] | undefined = data?.tratamientos;
@@ -160,7 +160,7 @@ const PacienteInfo = () => {
   }
 
   return (
-    <div className="w-full h-full flex-grow flex flex-col py-5 gap-5 overflow-auto">
+    <div className="w-full h-full flex-grow flex flex-col py-5 gap-5 overflow-auto z-[99999999999]">
       {(isLoading || isLoadingCambiar) && <GlobalSpinner />}
       {pacienteInfo && (
         <AddFileModal
@@ -170,6 +170,19 @@ const PacienteInfo = () => {
           paciente={pacienteInfo}
         />
       )}
+       {openAddTratamientoModal && (
+        <AddTratamientoModal
+          pacienteName={
+            pacienteInfo?.nombre +
+              " " +
+              pacienteInfo?.apellido || ""
+          }
+          pacienteId={userId}
+          setOpen={(val: any) => setOpenAddTratamientoModal(val)}
+          onSuccess={() => handleLoadPacienteInfo()}
+        />
+      )}
+      <div className="flex flex-row items-center justify-start w-auto gap-4">
       <button
         className={clsx(
           "px-4 py-2 w-[190px] text-center items-center justify-center flex rounded-md shadow-md text-white",
@@ -179,6 +192,18 @@ const PacienteInfo = () => {
       >
         Agregar Consulta
       </button>
+
+      <button
+        className={clsx(
+          "px-4 py-2 w-[190px] mr-2 text-center items-center justify-center flex rounded-md shadow-md text-white",
+          "bg-[#84DCCC]"
+        )}
+        onClick={() => setOpenAddTratamientoModal(true)}
+      >
+        Agregar Tratamiento
+      </button>
+      </div>
+
 
       <div className="w-full h-auto p-4 flex bg-white rounded-lg shadow-md flex flex-col items-start justify-start">
         <div className="w-full h-auto flex items-center justify-between">

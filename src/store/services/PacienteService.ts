@@ -102,7 +102,7 @@ export const PacienteService = createApi({
 
         },
       }),
-      invalidatesTags: ["Pacientes"],
+      invalidatesTags: ["Pacientes", "PacienteInfo"],
       transformResponse(value) {
         const response = value;
         return response;
