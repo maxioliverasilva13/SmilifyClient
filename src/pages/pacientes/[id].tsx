@@ -10,6 +10,7 @@ import {
   useCambiarEstadoMutation,
   useGetDientesInfoQuery,
   useGetPacienteInfoQuery,
+  useLazyGetPacienteInfoQuery,
 } from "src/store/services/PacienteService";
 import Loader from "src/components/Loader/Loader";
 import Error404 from "../404";
@@ -86,15 +87,26 @@ const PacienteInfo = () => {
 
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const [files, setFiles] = useState<Archivo[]>([]);
-  const { data, isLoading, refetch } = useGetPacienteInfoQuery(userId, {
-    skip: !userId,
-  });
+  const [getPacienteInfo] = useLazyGetPacienteInfoQuery();
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [
     camibarEstado,
     { isLoading: isLoadingCambiar },
   ] = useCambiarEstadoMutation();
 
-  useEffect(() => {}, [isLoading]);
+  const handleLoadPacienteInfo = async () => {
+    const response = await getPacienteInfo(userId);
+    setData(response.data);
+    console.log("resDAta", response.data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (userId) {
+      handleLoadPacienteInfo();
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (data?.archivos && data?.archivos?.length > 0) {
@@ -102,14 +114,12 @@ const PacienteInfo = () => {
     }
   }, [data]);
 
-  // if (!isLoading && !data) {
-  //   return <Error404 />;
-  // }
-  
-
   const precioOrden = userInfo?.configuracion?.precioPorOrden || 0;
-  
-  const formattedConsultas = formatConsultas(data?.consultas || [], precioOrden);
+
+  const formattedConsultas = formatConsultas(
+    data?.consultas || [],
+    precioOrden
+  );
 
   const handleGoToIniciarConsulta = () => {
     router.push(`${appRoutes.addConsulta()}?user=${userId}`);
@@ -128,11 +138,12 @@ const PacienteInfo = () => {
     } else {
       dataToSend = {
         ...dataToSend,
-        fechaAlta: pacienteInfo?.fechaDeAlta,
+        fechaAlta: dayjs(pacienteInfo?.fechaDeAlta).format("DD/MM/YYYY"),
         alta: false,
       };
     }
-    const response = await camibarEstado(dataToSend);
+    const response = await camibarEstado(dataToSend) as any;
+    setData({...data, pacienteInfo: response.data})
   };
 
   const pacienteInfo = data?.pacienteInfo;
@@ -144,6 +155,10 @@ const PacienteInfo = () => {
 
   const proximaConsulta = getProximaConsulta(data?.consultas || []);
 
+  if (!isLoading && !data?.pacienteInfo) {
+    return <Error404 />;
+  }
+
   return (
     <div className="w-full h-full flex-grow flex flex-col py-5 gap-5 overflow-auto">
       {(isLoading || isLoadingCambiar) && <GlobalSpinner />}
@@ -151,7 +166,7 @@ const PacienteInfo = () => {
         <AddFileModal
           isOpen={fileModalOpen}
           setIsOpen={setFileModalOpen}
-          onSuccess={() => refetch()}
+          onSuccess={() => handleLoadPacienteInfo()}
           paciente={pacienteInfo}
         />
       )}

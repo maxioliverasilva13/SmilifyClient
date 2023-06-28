@@ -73,8 +73,9 @@ export const getDientesInfoCount = (
   dientesInfo: any[] | undefined,
   dienteId: number
 ): any[] => {
-  if (!dientesInfo || dientesInfo?.length == 0) return [];
-
+  if (!dientesInfo || dientesInfo?.length == 0 || !dientesInfo?.length ) return [];
+  console.log("dienteinfo", dientesInfo)
+  console.log("typeof", typeof dientesInfo)
   return dientesInfo?.filter((item) => Number(item?.dienteId) == dienteId);
 };
 
