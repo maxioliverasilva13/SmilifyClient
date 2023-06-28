@@ -29,9 +29,8 @@ export default function AddCategoriaModal({
   const handleCreateCategoria = async () => {
     try {
       const resposne = await createCategoria({
-        nombre: description,
+        nombreCategoria: description,
       }) as any;
-      console.log("resposne is", resposne)
       if (resposne?.error && resposne?.error?.status == 500) {
         throw new Error("Error al crear la categoria")
       }
