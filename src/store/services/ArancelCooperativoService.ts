@@ -15,16 +15,25 @@ export const ArancelCooperativoService = createApi({
   endpoints: (builder) => ({
     postArancelCooperativo: builder.mutation({
       query: data => {
-        return {
-          url: apiRoutes.postArancelCooperativo(),
-          method: "POST",
-          body: { nombre: data?.nombre, categoriaId: data?.idCategoria, cantOrdenes: data?.precio, type: data?.type},
-        };
+        if(data?.type === "Laboratorio"){
+          return {
+            url: apiRoutes.postArancelCooperativo(),
+            method: "POST",
+            body: { nombre: data?.nombre, categoriaId: data?.idCategoria, precio: data?.precio, type: data?.type},
+          };
+        }else{
+          return {
+            url: apiRoutes.postArancelCooperativo(),
+            method: "POST",
+            body: { nombre: data?.nombre, categoriaId: data?.idCategoria, cantOrdenes: data?.precio, type: data?.type},
+          };
+        }
       },
       transformResponse(value) {
         const response = value;
         return response;
       },
+      invalidatesTags: ["ArancelCooperativo"]
     }),
   }),
 });

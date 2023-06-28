@@ -33,7 +33,7 @@ const style = {
 function formatCategorias(categoria: any) {
   if (!categoria) return [];
   return categoria.map((item: any) => ({
-    label: item.nombre,
+    label: item.nombreCategoria,
     id: item.id,
   }));
 }

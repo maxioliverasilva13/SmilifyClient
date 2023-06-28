@@ -69,7 +69,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
     return (
       <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
         <span className="text-[#514D59] font-medium py-8">
-          No se encontraron reservas para el día de hoy.
+          {onlyDiarias ? "No se encontraron reservas para el día de hoy." : "No se encontraron reservas pendientes a aceptar."}
         </span>
       </div>
     );

@@ -21,6 +21,7 @@ const apiRoutes = {
     postPaciente: () => "/entities.paciente",
     postReserva: () => "/entities.reserva",
     tratamiento: () => "/entities.tratamiento",
+    finalizarTratamiento: (tratamientoId: any) => `/entities.tratamiento/finalizar/${tratamientoId}`,
     reservasByPaciente: (pacienteId: string) => `/entities.reserva/reservasByPaciente/${pacienteId}`,
     getReservasByUserCedula: (dataCedula: any) => `/entities.reserva/validate/${dataCedula}`,
     getReservasByFecha: (data: any) => `/entities.reserva/obtenerFechasByFechas?fecha=${data}`,
