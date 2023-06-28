@@ -5,12 +5,15 @@ const { useState } = require("react");
 const useUploadFile = () => {
   const [fileError, setFileError] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const [uploadingFile , setUploadingFile] = useState(false);
 
   const handleUpload = async (file: File) => {
+    
     try {
         if (!file) {
             return null;
           }
+          setUploadingFile(true);
           const storageRef = ref(
             storage,
             `/smilify/files/${file.type}/${Date.now() + file?.name}`
@@ -19,10 +22,14 @@ const useUploadFile = () => {
           await uploadTask;
           const newUrl = await getDownloadURL(uploadTask.snapshot.ref);
           setFileUrl(newUrl);
+          setUploadingFile(false);
           return newUrl;
     } catch (error) {
       setFileError("Error al submir archivo");
+      setUploadingFile(false);
+
         return "";
+
     }
   };
 
@@ -30,6 +37,7 @@ const useUploadFile = () => {
     handleUpload,
     fileError,
     fileUrl,
+    uploadingFile
   };
 };
 
