@@ -12,7 +12,11 @@ export const getCostoArancel = (arancelInfo: any, precioOrden?: number) => {
         return arancelInfo?.precio;
     }
     if (arancelInfo?.type === "ArancelColectivo") {
-        return Number(precioOrden || 0) * Number(arancelInfo?.cantOrdenes);
+        if(precioOrden){
+            return Number(precioOrden || 0) * Number(arancelInfo?.cantOrdenes);
+        }else{
+            return arancelInfo?.precio;
+        }
     }
 
     return 0;

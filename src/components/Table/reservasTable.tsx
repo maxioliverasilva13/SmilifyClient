@@ -69,7 +69,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
     return (
       <div className="w-full h-full flex-grow transition-all flex items-center justify-center ">
         <span className="text-[#514D59] font-medium py-8">
-          No se encontraron reservas para el día de hoy.
+          {onlyDiarias ? "No se encontraron reservas para el día de hoy." : "No se encontraron reservas pendientes a aceptar."}
         </span>
       </div>
     );
@@ -245,7 +245,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                             setCurrentReserva(item);
                             setIsAceptarModalOpen(true);
                           }}
-                          className="decoration-none text-green-500"
+                          className="decoration-none text-[#84DCCC]"
                         >
                           {/* Aceptar */}
                           <FaCheck title="Aceptar" size={25} />
@@ -255,7 +255,7 @@ const ReservasTable = ({ cols, values = [], onlyDiarias }: Props) => {
                             setCurrentReserva(item);
                             setIsRechazarModalOpen(true);
                           }}
-                          className="decoration-none text-red-500"
+                          className="decoration-none text-[#FF8C8C]"
                         >
                           {/* Rechazar */}
                           <ImCross title="Rechazar" size={20} />

@@ -5,8 +5,7 @@ import { getCostoArancel } from "./utils";
 export const getEdadbyFecha = (fecha: number | null | undefined): number => {
   try {
     if (!fecha) return 0;
-
-    const nacimiento = dayjs(fecha).format("DD/MM/YYYY");
+    const nacimiento = dayjs(fecha);
     const now = dayjs();
     const edad = now.diff(nacimiento, "years");
     return edad;
@@ -73,8 +72,9 @@ export const getDientesInfoCount = (
   dientesInfo: any[] | undefined,
   dienteId: number
 ): any[] => {
-  if (!dientesInfo || dientesInfo?.length == 0) return [];
-
+  if (!dientesInfo || dientesInfo?.length == 0 || !dientesInfo?.length ) return [];
+  console.log("dienteinfo", dientesInfo)
+  console.log("typeof", typeof dientesInfo)
   return dientesInfo?.filter((item) => Number(item?.dienteId) == dienteId);
 };
 

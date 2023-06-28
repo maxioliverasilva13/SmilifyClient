@@ -21,6 +21,7 @@ const apiRoutes = {
     postPaciente: () => "/entities.paciente",
     postReserva: () => "/entities.reserva",
     tratamiento: () => "/entities.tratamiento",
+    finalizarTratamiento: (tratamientoId: any) => `/entities.tratamiento/finalizar/${tratamientoId}`,
     reservasByPaciente: (pacienteId: string) => `/entities.reserva/reservasByPaciente/${pacienteId}`,
     getReservasByUserCedula: (dataCedula: any) => `/entities.reserva/validate/${dataCedula}`,
     getReservasByFecha: (data: any) => `/entities.reserva/obtenerFechasByFechas?fecha=${data}`,
@@ -28,7 +29,8 @@ const apiRoutes = {
     editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`,
     consultas: () => `/entities.consulta`,
     editMeInfo: () => `/authentication/editMeInfo`,
-    editConfiguracion: (configuracionId:number)=> `/entities.configuracion/${configuracionId}`
+    editConfiguracion: (configuracionId:number)=> `/entities.configuracion/${configuracionId}`,
+    estadisticas: () => `entities.usuario/estadisticas`
 }
 
 export default apiRoutes;

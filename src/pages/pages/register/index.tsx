@@ -47,10 +47,11 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '20%',
-  height: '20%', // Valor de altura deseado
+  width: 'auto',
+  height: 'auto', // Valor de altura deseado
   bgcolor: 'white',
   boxShadow: 24,
+  padding: "20px",
   //p: 4,
   borderRadius: 2,
   outline: 'none'
@@ -89,14 +90,10 @@ const RegisterPage = () => {
   const [responseReserva, setResponseReserva] = useState<any>("");
   const [isOpen, setOpen] = useState<boolean>(false);
   const handleClose = () => {
-    window.location.reload();
+    setOpen(false);
   }
   const [modalError, setModalError] = useState<boolean>(false);
 
-
-  console.log(response);
-  console.log(responseReserva);
-  console.log(isOpen);
 
   const theme = useTheme();
 
@@ -221,7 +218,7 @@ const RegisterPage = () => {
         telefono: telefono,
         correo: correo,
         direccion: direccion,
-        fechaDeNacimiento: formatFecha(fechaNacimiento)
+        fechaNacimiento: formatFecha(fechaNacimiento)
       }))
     } else {
 
@@ -264,7 +261,6 @@ const RegisterPage = () => {
     if (responseReserva != "") {
 
       if (responseReserva?.data?.statusCode === 200) {
-        console.log(responseReserva.data.statusCode)
         setModalError(false);
         setOpen(true);
       } else {
@@ -389,7 +385,7 @@ const RegisterPage = () => {
                   value={hora}
                   onChange={handleTimeChange}
                 >
-                  {!hora ? (
+                  {filterTimeSlots().length > 0 ? (
                     filterTimeSlots().map((time) => (
                       <MenuItem key={time} value={time}>
                         {time}

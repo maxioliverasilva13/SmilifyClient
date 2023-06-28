@@ -46,6 +46,9 @@ export default function AddTratamientoModal({
       setTimeout(() => [
         setOpen(false)
       ], 1000)
+      if (onSuccess) {
+        onSuccess();
+      }
       // console.log("resposne", resposne);
     } catch (error) {
       setError("Error al crear el tratamiento");
@@ -53,7 +56,7 @@ export default function AddTratamientoModal({
   };
 
   return (
-    <div className="appearsAnimation backdrop-blur-md w-screen z-[100] h-screen fixed top-0 left-0 flex flex-col items-center justify-center">
+    <div className="appearsAnimation backdrop-blur-md w-screen z-[9999999999] h-screen fixed top-0 left-0 flex flex-col items-center justify-center">
       <div className="md:w-[640px] h-auto p-[20px] shadow-xs border border-gray-300 rounded-lg bg-white flex flex-col items-center gap-y-2 relative">
         <GrClose
           size={20}

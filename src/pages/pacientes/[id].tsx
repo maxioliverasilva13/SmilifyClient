@@ -10,6 +10,7 @@ import {
   useCambiarEstadoMutation,
   useGetDientesInfoQuery,
   useGetPacienteInfoQuery,
+  useLazyGetPacienteInfoQuery,
 } from "src/store/services/PacienteService";
 import Loader from "src/components/Loader/Loader";
 import Error404 from "../404";
@@ -29,6 +30,7 @@ import GlobalSpinner from "src/components/Spinner/GlobalSpinner";
 import { ConsultaExtended } from "src/types/consulta";
 import appRoutes from "src/utils/appRoutes";
 import useGlobal from "src/hooks/useGlobal";
+import AddTratamientoModal from "src/components/AddTratamientoModal/AddTratamientoModal";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -64,6 +66,10 @@ const colsTratamientos: any = [
     key: "status",
     value: "Estado",
   },
+  {
+    key: "acciones",
+    value: "Acciones",
+  },
 ];
 
 const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
@@ -75,21 +81,33 @@ const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
 };
 
 const PacienteInfo = () => {
+  const { userInfo } = useGlobal();
   const router = useRouter();
   const { id = "" } = router.query;
   const userId = id as string;
 
   const [fileModalOpen, setFileModalOpen] = useState(false);
   const [files, setFiles] = useState<Archivo[]>([]);
-  const { data, isLoading, refetch } = useGetPacienteInfoQuery(userId, {
-    skip: !userId,
-  });
+  const [openAddTratamientoModal, setOpenAddTratamientoModal] = useState(false);
+  const [getPacienteInfo] = useLazyGetPacienteInfoQuery();
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [
     camibarEstado,
     { isLoading: isLoadingCambiar },
   ] = useCambiarEstadoMutation();
 
-  useEffect(() => {}, [isLoading]);
+  const handleLoadPacienteInfo = async () => {
+    const response = await getPacienteInfo(userId);
+    setData(response.data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (userId) {
+      handleLoadPacienteInfo();
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (data?.archivos && data?.archivos?.length > 0) {
@@ -97,15 +115,12 @@ const PacienteInfo = () => {
     }
   }, [data]);
 
-  if (!isLoading && !data) {
-    return <Error404 />;
-  }
-  
-
-  const { userInfo } = useGlobal();
   const precioOrden = userInfo?.configuracion?.precioPorOrden || 0;
-  
-  const formattedConsultas = formatConsultas(data?.consultas || [], precioOrden);
+
+  const formattedConsultas = formatConsultas(
+    data?.consultas || [],
+    precioOrden
+  );
 
   const handleGoToIniciarConsulta = () => {
     router.push(`${appRoutes.addConsulta()}?user=${userId}`);
@@ -124,15 +139,15 @@ const PacienteInfo = () => {
     } else {
       dataToSend = {
         ...dataToSend,
-        fechaAlta: pacienteInfo?.fechaDeAlta,
+        fechaAlta: dayjs(pacienteInfo?.fechaDeAlta).format("DD/MM/YYYY"),
         alta: false,
       };
     }
-    const response = await camibarEstado(dataToSend);
+    const response = await camibarEstado(dataToSend) as any;
+    setData({...data, pacienteInfo: response.data})
   };
 
   const pacienteInfo = data?.pacienteInfo;
-  console.log("pac info", pacienteInfo);
   const tieneAlta = pacienteInfo?.tieneAlta;
 
   const tratamientos: Tratamiento[] | undefined = data?.tratamientos;
@@ -140,17 +155,34 @@ const PacienteInfo = () => {
 
   const proximaConsulta = getProximaConsulta(data?.consultas || []);
 
+  if (!isLoading && !data?.pacienteInfo) {
+    return <Error404 />;
+  }
+
   return (
-    <div className="w-full h-full flex-grow flex flex-col py-20 gap-5 overflow-auto">
+    <div className="w-full h-full flex-grow flex flex-col py-5 gap-5 overflow-auto z-[99999999999]">
       {(isLoading || isLoadingCambiar) && <GlobalSpinner />}
       {pacienteInfo && (
         <AddFileModal
           isOpen={fileModalOpen}
           setIsOpen={setFileModalOpen}
-          onSuccess={() => refetch()}
+          onSuccess={() => handleLoadPacienteInfo()}
           paciente={pacienteInfo}
         />
       )}
+       {openAddTratamientoModal && (
+        <AddTratamientoModal
+          pacienteName={
+            pacienteInfo?.nombre +
+              " " +
+              pacienteInfo?.apellido || ""
+          }
+          pacienteId={userId}
+          setOpen={(val: any) => setOpenAddTratamientoModal(val)}
+          onSuccess={() => handleLoadPacienteInfo()}
+        />
+      )}
+      <div className="flex flex-row items-center justify-start w-auto gap-4">
       <button
         className={clsx(
           "px-4 py-2 w-[190px] text-center items-center justify-center flex rounded-md shadow-md text-white",
@@ -160,6 +192,18 @@ const PacienteInfo = () => {
       >
         Agregar Consulta
       </button>
+
+      <button
+        className={clsx(
+          "px-4 py-2 w-[190px] mr-2 text-center items-center justify-center flex rounded-md shadow-md text-white",
+          "bg-[#84DCCC]"
+        )}
+        onClick={() => setOpenAddTratamientoModal(true)}
+      >
+        Agregar Tratamiento
+      </button>
+      </div>
+
 
       <div className="w-full h-auto p-4 flex bg-white rounded-lg shadow-md flex flex-col items-start justify-start">
         <div className="w-full h-auto flex items-center justify-between">

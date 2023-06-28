@@ -53,10 +53,23 @@ const Aranceles = () => {
             }
       });
 
-      setFilterData(results);
-  }
-}, [tipoArancelSelected,aranceles,search]);
-
+      setFilterData(
+        results?.map((item: any) => {
+          if (item?.cantOrdenes) {
+            return {
+              ...item,
+              precio: item?.cantOrdenes,
+              nombreCategoria: item?.nombreCategoria,
+            };
+          }
+          return {
+            ...item,
+            nombreCategoria: item?.nombreCategoria,
+          };
+        })
+      );
+    }
+  }, [tipoArancelSelected, aranceles]);
 
   if (isLoading) {
     return <GlobalSpinner />;
@@ -88,22 +101,62 @@ const Aranceles = () => {
       <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-xl p-6 flex flex-col items-start justify-start">
         <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">
           <div className="w-full flex flex-row items-center max-w-full justify-between">
-          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-                <ul className="flex flex-wrap -mb-px">
-                    <li className="mr-2" onClick={()=> { onSelectTipoArancel(TipoArancel.Privado)}}>
-                        <a href="#" className={"text-xl inline-block p-4 border-b-2 rounded-t-lg hover:text-blue-[#84dccc] hover:border-gray-300 dark:hover:text-gray-300 " + (tipoArancelSelected == TipoArancel.Privado ? "border-[#84dccc] text-[#84dccc]" : "border-transparent")}>Arancel Privado</a>
-                    </li>
-                    <li className="mr-2" onClick={()=> { onSelectTipoArancel(TipoArancel.Colectivo)}}>
-                        <a href="#"className={"text-xl	 inline-block p-4  border-b-2 border-[#84dccc] hover:text-blue-[#84dccc]  rounded-t-lg  dark:text-blue-500 dark:border-blue-500 " + (tipoArancelSelected == TipoArancel.Colectivo ? "border-[#84dccc] text-[#84dccc]" : "border-transparent")} aria-current="page">Arancel Colectivo</a>
-                    </li>
-
-                    <li className="mr-2" onClick={()=> { onSelectTipoArancel(TipoArancel.Laboratorio)}}>
-                        <a href="#"className={"text-xl	 inline-block p-4  border-b-2 border-[#84dccc] hover:text-blue-[#84dccc]  rounded-t-lg  dark:text-blue-500 dark:border-blue-500 " + (tipoArancelSelected == TipoArancel.Laboratorio ? "border-[#84dccc] text-[#84dccc]" : "border-transparent")} aria-current="page">Arancel de Laboratorio</a>
-                    </li>
-                   
-
-                   
-                </ul>
+            <div className="text-sm font-medium text-center text-gray-500 dark:text-gray-400 dark:border-gray-700">
+              <ul className="flex flex-wrap -mb-px">
+                <li
+                  className="mr-2 cursor-pointer border-0"
+                  onClick={() => {
+                    onSelectTipoArancel(TipoArancel.Privado);
+                  }}
+                >
+                  <span
+                    className={
+                      "text-xl inline-block transition-all p-4 border-b-2 rounded-t-lg hover:text-blue-600 hover:border-gray-300 " +
+                      (tipoArancelSelected == TipoArancel.Privado
+                        ? "border-blue-600 text-blue-600"
+                        : "border-white")
+                    }
+                  >
+                    Arancel Privado
+                  </span>
+                </li>
+                <li
+                  className="mr-2 cursor-pointer border-0"
+                  onClick={() => {
+                    onSelectTipoArancel(TipoArancel.Colectivo);
+                  }}
+                >
+                  <span
+                    className={
+                      "text-xl inline-block transition-all p-4 border-b-2 rounded-t-lg hover:text-blue-600 hover:border-gray-300 " +
+                      (tipoArancelSelected === TipoArancel.Colectivo
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent")
+                    }
+                    aria-current="page"
+                  >
+                    Arancel Colectivo
+                  </span>
+                </li>
+                <li
+                  className="mr-2 cursor-pointer border-0"
+                  onClick={() => {
+                    onSelectTipoArancel(TipoArancel.Laboratorio);
+                  }}
+                >
+                  <span
+                    className={
+                      "text-xl inline-block transition-all p-4 border-b-2 rounded-t-lg hover:text-blue-600 hover:border-gray-300 " +
+                      (tipoArancelSelected === TipoArancel.Laboratorio
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent")
+                    }
+                    aria-current="page"
+                  >
+                    Arancel Laboratorio
+                  </span>
+                </li>
+              </ul>
             </div>
             <div className="overflow-hidden flex flex-row items-center justify-start gap-1 border-[0.5px] border-[#A8A8A8] px-4 py-2 rounded-full h-[40px] w-[240px] ">
               <SearchIcon />
@@ -117,7 +170,24 @@ const Aranceles = () => {
           </div>
         </div>
 
-        <Table  cols={cols} values={filterData} />
+        <Table
+          customClick={() => null}
+          cols={
+            [{
+              key: "nombre",
+              value: "Nombre",
+            },
+            {
+              key: "precio",
+              value: "Precio",
+            },
+            {
+              key: "nombreCategoria",
+              value: "Prestación",
+            }]
+          }
+          values={filterData}
+        />
       </div>
     </div>
   );

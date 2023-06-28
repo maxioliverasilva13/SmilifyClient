@@ -30,7 +30,7 @@ const Table = ({ cols, values, customClick, isLoading = false }: Props) => {
               <div
                 key={index}
                 className={clsx(
-                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-normal flex-row items-center justify-between",
+                  "w-full flex-grow h-auto flex text-[#514D59] text-center text-[18px] font-semibold flex-row items-center justify-between",
                   item?.customWidth &&
                     `${
                       item?.customWidth === "auto"

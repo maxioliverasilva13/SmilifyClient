@@ -47,6 +47,13 @@ export const UserService = createApi({
         return response;
       },
     }),
+    estadisticas: builder.query({
+      query: apiRoutes.estadisticas,
+      transformResponse(value:any) {
+        const response = value;
+        return response;
+      },
+    }),
 
     editConfig : builder.mutation({
       query: configData => {
@@ -68,5 +75,6 @@ export const {
   useSignInMutation,
   useCurrentUserQuery,
   useEditMeInfoMutation,
-  useEditConfigMutation
+  useEditConfigMutation,
+  useEstadisticasQuery
 } = UserService;

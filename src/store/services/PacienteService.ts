@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
 export const PacienteService = createApi({
   reducerPath: "PacientesService",
   baseQuery: baseQuery,
-  tagTypes: ["Pacientes", "PacienteInfo", "DientesInfo", "ConstulasByPaciente"],
+  tagTypes: ["Pacientes", "PacienteInfo", "DientesInfo", "ConstulasByPaciente", "Tratamientos"],
   endpoints: (builder) => ({
     getPacientes: builder.query({
       providesTags: ["Pacientes"],
@@ -102,7 +102,18 @@ export const PacienteService = createApi({
 
         },
       }),
-      invalidatesTags: ["Pacientes"],
+      invalidatesTags: ["Pacientes", "PacienteInfo"],
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
+    finalizarTratamiento: builder.mutation({
+      query: (tratamientoId: any) => ({
+        url: `${apiRoutes.finalizarTratamiento(tratamientoId)}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["PacienteInfo", "Tratamientos"],
       transformResponse(value) {
         const response = value;
         return response;
@@ -150,6 +161,7 @@ export const PacienteService = createApi({
 export const {
   useGetPacientesQuery,
   useGetPacienteInfoQuery,
+  useLazyGetPacienteInfoQuery,
   useCambiarEstadoMutation,
   useGetPacienteByIdQuery,
   usePostPacienteMutation,
@@ -158,5 +170,6 @@ export const {
   useCreateTratamientoMutation,
   useGetReservasByPacienteQuery,
   useCreateConsultaMutation,
+  useFinalizarTratamientoMutation,
   
 } = PacienteService;
