@@ -43,12 +43,13 @@ export default function AddTratamientoModal({
       });
       setSuccess(true);
       setError(null);
-      setTimeout(() => [
-        setOpen(false)
-      ], 1000)
-      if (onSuccess) {
-        onSuccess();
-      }
+      setTimeout(() => {
+        setOpen(false);
+        if (onSuccess) {
+          onSuccess();
+        }
+      }, 1000);
+
       // console.log("resposne", resposne);
     } catch (error) {
       setError("Error al crear el tratamiento");
