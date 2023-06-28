@@ -1,5 +1,7 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, SyntheticEvent } from 'react'
+import { useState, ElementType, ChangeEvent, SyntheticEvent } from 'react';
+
+
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -18,8 +20,37 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Button, { ButtonProps } from '@mui/material/Button'
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+import { useEditMeInfoMutation } from 'src/store/services/UserService';
+
+import  useUploadFile   from 'src/hooks/useUploadFile';
+
+import GlobalImage from 'src/components/GlobalImage/GlobalImage';
+
+
+import dayjs from 'dayjs';
 // ** Icons Imports
-import Close from 'mdi-material-ui/Close'
+import Close from 'mdi-material-ui/Close';
+
+import moment from 'moment';
+import { read } from 'fs';
+import GlobalSpinner from 'src/components/Spinner/GlobalSpinner';
+
+interface errorFormulario {
+  nombre: string | null,
+  celular: string | null,
+  fechaNacimiento: string | null,
+  correo: string | null,
+  apellido: string | null,
+}
+
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -28,12 +59,14 @@ const ImgStyled = styled('img')(({ theme }) => ({
   borderRadius: theme.shape.borderRadius
 }))
 
+
 const ButtonStyled = styled(Button)<ButtonProps & { component?: ElementType; htmlFor?: string }>(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     width: '100%',
     textAlign: 'center'
   }
 }))
+
 
 const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
   marginLeft: theme.spacing(4.5),
@@ -45,31 +78,171 @@ const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
   }
 }))
 
-const TabAccount = () => {
+const TabAccount = ({userData}) => {
   // ** State
   const [openAlert, setOpenAlert] = useState<boolean>(true)
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
+  const [userInfo, setUserInfo] = useState<any>(userData);
+  const [imgSrc, setImgSrc] = useState<string>(userInfo?.avatar);
+  const [submit ,setSubmit] = useState<boolean>(false);
+
+  const [avatarImported , setAvatarFileImported] = useState<File | null>(null);
+  const { handleUpload, fileError, fileUrl,uploadingFile } = useUploadFile();
+
+  const [formErrors, setFormErrors] = useState<errorFormulario>({
+      nombre: '',
+      celular: null,
+      fechaNacimiento: null,
+      correo: null,
+      apellido: null
+  });
+  const [editMeInfo, { isLoading: loadingEdit, isError : errorEdit }] = useEditMeInfoMutation();
+
+
+
+  
+  const handleChange = (prop: keyof any) => (event: ChangeEvent<HTMLInputElement>) => {
+    setUserInfo({ ...userInfo, [prop]: event.target.value })
+  }
+
 
   const onChange = (file: ChangeEvent) => {
     const reader = new FileReader()
     const { files } = file.target as HTMLInputElement
     if (files && files.length !== 0) {
-      reader.onload = () => setImgSrc(reader.result as string)
-
+      
+      reader.onload = () => {
+        setImgSrc(reader.result as string)
+        setAvatarFileImported(files[0]);
+      }
       reader.readAsDataURL(files[0])
     }
   }
 
+
+  const validarFormulario = ()=>{
+    const errors: errorFormulario = {
+      nombre: null,
+      celular: null,
+      fechaNacimiento: null,
+      correo: null,
+      apellido: null,
+  };
+
+  let formularioValido = true;
+
+  // Nombres y Apellidos 
+
+  if (!userInfo["nombre"]) {
+      formularioValido = false;
+      errors["nombre"] = "Nombre es requerido";
+  }
+
+  if (!userInfo["apellido"]) {
+      formularioValido = false;
+      errors["apellido"] = "Apellido es requerido";
+  }
+
+
+  // Email
+  if (!userInfo["celular"]) {
+      formularioValido = false;
+      errors["celular"] = "Celular es requerido.";
+  }
+
+
+  // Asunto
+  if (!userInfo["fechaNacimiento"]) {
+      formularioValido = false;
+      errors["fechaNacimiento"] = "Fecha de Nacimiento es requerido";
+  }
+
+  // Validamos si el formato del Email es correcto 
+  if (!userInfo["email"]) {
+      errors["correo"] = "Correo requerido";
+   
+  }else{
+       const regexEmail = new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+       if(!regexEmail.test(userInfo["email"])){
+          errors["correo"] = "Email es invalido";
+
+       }
+  }
+  setFormErrors(errors);
+
+  return formularioValido;
+  }
+
+  const onSubmit = async()=>{
+      setSubmit(true);
+      if(!validarFormulario()){
+        return;
+      }
+      
+      const { email , ...data } = userInfo;
+      let body  = {
+        ...data,
+        fechaNacimiento:  moment(data.fechaNacimiento.$d).format("DD/MM/YYYY")
+      }
+      if(avatarImported){
+        const urlNewAvatar = await handleUpload(avatarImported);
+        body = {
+          ...body,
+          avatar: urlNewAvatar
+        }
+        setAvatarFileImported(null);
+      }
+
+      try{
+        const res:any = await editMeInfo(body);
+        const { data } = res;
+        const { statusCode , message } = data;
+        if(statusCode != 200){
+          toast.error("Ha ocurrido un error!"); 
+          return;
+        }
+        toast.success(message);
+
+      }catch(e){
+        toast.error("Ha ocurrido un error!"); 
+
+      }
+      
+  }
+
+  const handleFechaDeNacimiento = (value: any) => {
+    if (!value) {
+        return;
+    }
+    setUserInfo({ ...userInfo, fechaNacimiento:  value })
+  }
+
+  
+  
+  if (loadingEdit || uploadingFile) {
+    return <GlobalSpinner />;
+  }
   return (
     <CardContent>
       <form>
         <Grid container spacing={7}>
           <Grid item xs={12} sx={{ marginTop: 4.8, marginBottom: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <ImgStyled src={imgSrc} alt='Profile Pic' />
-              <Box>
+            <Box>
+              <div className="relative w-[150px] h-[150px] mr-5"> 
+                  <GlobalImage
+                      src={imgSrc}
+                      loader={() => userInfo?.avatar}
+                      layout="fill"
+                      objectFit="cover"
+                      className="w-full h-full rounded"
+                    
+                    ></GlobalImage>
+                </div>
+            </Box>
+           
+              <Box >
                 <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                  Upload New Photo
+                  Subir nuevo avatar
                   <input
                     hidden
                     type='file'
@@ -78,87 +251,121 @@ const TabAccount = () => {
                     id='account-settings-upload-image'
                   />
                 </ButtonStyled>
-                <ResetButtonStyled color='error' variant='outlined' onClick={() => setImgSrc('/images/avatars/1.png')}>
-                  Reset
-                </ResetButtonStyled>
+                
                 <Typography variant='body2' sx={{ marginTop: 5 }}>
-                  Allowed PNG or JPEG. Max size of 800K.
+                  Solo archivos PNG , JPG o JPEG
                 </Typography>
               </Box>
             </Box>
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
+          <div className="flex">
+              <p className="mb-2">Nombre</p>
+              {
+                  submit && formErrors['nombre'] && (
+                      <span className="ml-5 text-red-500">{formErrors['nombre']}</span>
+
+                  )
+
+              }
+
+          </div>
+
+                                
+            <TextField fullWidth label='Nombre' value={userInfo.nombre} onChange={handleChange('nombre')}/> 
+           
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+              <div className="flex">
+                  <p className="mb-2">Apellido</p>
+                  {
+                      submit && formErrors['apellido'] && (
+                          <span className="ml-5 text-red-500">{formErrors['apellido']}</span>
+
+                      )
+
+                  }
+              </div>
+              <TextField fullWidth label='Apellido'  value={userInfo.apellido} onChange={handleChange('apellido')}/>
           </Grid>
           <Grid item xs={12} sm={6}>
+          <div className="flex">  
+                  <p className="mb-2">Correo Electronico</p>
+                  {
+                      submit && formErrors['correo'] && (
+                          <span className="ml-5 text-red-500">{formErrors['correo']}</span>
+
+                      )
+
+                  }
+              </div>
             <TextField
               fullWidth
               type='email'
-              label='Email'
-              placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              label='Correo Electronico'
+              disabled
+              value={userInfo.email}
+              onChange={handleChange('email')}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select label='Role' defaultValue='admin'>
-                <MenuItem value='admin'>Admin</MenuItem>
-                <MenuItem value='author'>Author</MenuItem>
-                <MenuItem value='editor'>Editor</MenuItem>
-                <MenuItem value='maintainer'>Maintainer</MenuItem>
-                <MenuItem value='subscriber'>Subscriber</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
-              <Select label='Status' defaultValue='active'>
-                <MenuItem value='active'>Active</MenuItem>
-                <MenuItem value='inactive'>Inactive</MenuItem>
-                <MenuItem value='pending'>Pending</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Company' placeholder='ABC Pvt. Ltd.' defaultValue='ABC Pvt. Ltd.' />
-          </Grid>
+           <div className="flex">
+                  <p className="mb-2">Fecha de Nacimiento</p>
+                  {
+                      submit && formErrors['fechaNacimiento'] && (
+                          <span className="ml-5 text-red-500">{formErrors['fechaNacimiento']}</span>
 
-          {openAlert ? (
-            <Grid item xs={12} sx={{ mb: 3 }}>
-              <Alert
-                severity='warning'
-                sx={{ '& a': { fontWeight: 400 } }}
-                action={
-                  <IconButton size='small' color='inherit' aria-label='close' onClick={() => setOpenAlert(false)}>
-                    <Close fontSize='inherit' />
-                  </IconButton>
-                }
-              >
-                <AlertTitle>Your email is not confirmed. Please check your inbox.</AlertTitle>
-                <Link href='/' onClick={(e: SyntheticEvent) => e.preventDefault()}>
-                  Resend Confirmation
-                </Link>
-              </Alert>
-            </Grid>
-          ) : null}
+                      )
+
+                  }
+              </div>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+                  <DatePicker format="DD/MM/YYYY"
+                      defaultValue={userInfo.fechaNacimiento ?  dayjs(userInfo.fechaNacimiento) : null}
+                      className="w-full"
+                      onChange={(newValue) => handleFechaDeNacimiento(newValue)} />
+              </LocalizationProvider>
+
+          </Grid>
+          
+          <Grid item xs={12} sm={7}>
+               <div className="flex">
+                  <p className="mb-2">Celular</p>
+                  {
+                      submit && formErrors['celular'] && (
+                          <span className="ml-5 text-red-500">{formErrors['celular']}</span>
+
+                      )
+
+                  }
+              </div>
+              <TextField
+                    fullWidth
+                    type='email'
+                    label='Celular'
+                    value={userInfo.celular}
+                    onChange={handleChange('celular')}
+                
+                  />
+          </Grid>
+         
+         
 
           <Grid item xs={12}>
-            <Button variant='contained' sx={{ marginRight: 3.5 }}>
-              Save Changes
+            <Button variant='contained' sx={{ marginRight: 3.5 }}
+              onClick={()=> onSubmit()}>
+              Guardar Cambios
             </Button>
-            <Button type='reset' variant='outlined' color='secondary'>
-              Reset
-            </Button>
+          
           </Grid>
         </Grid>
       </form>
+      <ToastContainer  />
+
     </CardContent>
+
+    
   )
 }
 

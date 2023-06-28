@@ -28,6 +28,8 @@ const apiRoutes = {
     cambiarEstadoReserva: () => `/entities.reserva/cambiarEstado`,
     editarPaciente: (pacienteId:any) => `/entities.paciente/${pacienteId}`,
     consultas: () => `/entities.consulta`,
+    editMeInfo: () => `/authentication/editMeInfo`,
+    editConfiguracion: (configuracionId:number)=> `/entities.configuracion/${configuracionId}`,
     estadisticas: () => `entities.usuario/estadisticas`
 }
 

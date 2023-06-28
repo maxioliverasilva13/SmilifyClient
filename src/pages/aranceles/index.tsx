@@ -31,17 +31,26 @@ const Aranceles = () => {
   // const [filterData, setFilterData] = useState<any>([]);
   // const { push } = useRouter();
 
-  const [tipoArancelSelected, setTipoArancelSelected] = useState(
-    TipoArancel.Privado
-  );
-  const [filterData, setFilterData] = useState([]);
+ const [tipoArancelSelected,setTipoArancelSelected] = useState(TipoArancel.Privado);
+ const [ filterData , setFilterData ] = useState([]);
+ const [search, setSearch] = useState('');
 
   const dataToUse = aranceles;
 
-  useEffect(() => {
+
+
+ useEffect(() => {
     if (tipoArancelSelected) {
-      const results: any = dataToUse?.filter((item: any) => {
-        return item.type == tipoArancelSelected;
+      const results:any = dataToUse?.filter((item:any) => {
+            if(search.trim().length > 0){
+              const arancelNameLower = item.nombre.toLowerCase();
+              const searchLower = search.toLowerCase();
+              return item.type  == tipoArancelSelected && arancelNameLower.includes(searchLower);
+
+            }else{
+              return item.type  == tipoArancelSelected;
+
+            }
       });
 
       setFilterData(
@@ -66,16 +75,26 @@ const Aranceles = () => {
     return <GlobalSpinner />;
   }
 
-  function onSelectTipoArancel(type: TipoArancel): void {
-    if (type == tipoArancelSelected) {
-      return;
-    }
-    setTipoArancelSelected(type);
+  
+
+  function onSelectTipoArancel(type:TipoArancel):void{
+        if(type == tipoArancelSelected){
+            return;
+        }
+        setSearch('');
+        setTipoArancelSelected(type);
   }
 
-  function onClick() {
-    console.log("hola");
+
+  const  handleChangeSearch = ($event:any)=>{
+    const value = $event.target.value;
+    setSearch(value);
+
   }
+
+  
+
+  
 
   return (
     <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto">
@@ -142,16 +161,17 @@ const Aranceles = () => {
             <div className="overflow-hidden flex flex-row items-center justify-start gap-1 border-[0.5px] border-[#A8A8A8] px-4 py-2 rounded-full h-[40px] w-[240px] ">
               <SearchIcon />
               <input
+                value={search}
                 className="bg-transparent text-[#A8A8A8] outline-none"
                 placeholder="Search..."
+                onChange={ ($event:any) => handleChangeSearch($event) }
               />
             </div>
           </div>
-          <Filter className="cursor-pointer" />
         </div>
 
         <Table
-          customClick={onClick}
+          customClick={() => null}
           cols={
             [{
               key: "nombre",

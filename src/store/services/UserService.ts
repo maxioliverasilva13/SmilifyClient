@@ -33,6 +33,19 @@ export const UserService = createApi({
         return response;
       },
     }),
+    editMeInfo: builder.mutation({
+      query: data => {
+        return {
+          url: apiRoutes.editMeInfo(),
+          method: "PUT", 
+          body: { ...data},
+        };
+      },
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    }),
     estadisticas: builder.query({
       query: apiRoutes.estadisticas,
       transformResponse(value:any) {
@@ -40,11 +53,27 @@ export const UserService = createApi({
         return response;
       },
     }),
+
+    editConfig : builder.mutation({
+      query: configData => {
+        return {
+          url: apiRoutes.editConfiguracion(configData.id),
+          method: "PUT",    
+          body: { PrecioPorOrden : configData.precioPorOrden},
+        };
+      },
+      transformResponse(value) {
+        const response = value;
+        return response;
+      },
+    })
   }),
 });
 
 export const {
   useSignInMutation,
   useCurrentUserQuery,
+  useEditMeInfoMutation,
+  useEditConfigMutation,
   useEstadisticasQuery
 } = UserService;
