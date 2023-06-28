@@ -80,6 +80,7 @@ const ItemInfo = ({ keyItem, value }: ItemInfoProps) => {
 };
 
 const PacienteInfo = () => {
+  const { userInfo } = useGlobal();
   const router = useRouter();
   const { id = "" } = router.query;
   const userId = id as string;
@@ -113,7 +114,6 @@ const PacienteInfo = () => {
     }
   }, [data]);
 
-  const { userInfo } = useGlobal();
   const precioOrden = userInfo?.configuracion?.precioPorOrden || 0;
 
   const formattedConsultas = formatConsultas(

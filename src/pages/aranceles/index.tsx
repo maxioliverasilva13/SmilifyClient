@@ -60,7 +60,7 @@ const Aranceles = () => {
         })
       );
     }
-  }, [tipoArancelSelected]);
+  }, [tipoArancelSelected, aranceles]);
 
   if (isLoading) {
     return <GlobalSpinner />;
