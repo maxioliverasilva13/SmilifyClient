@@ -332,7 +332,7 @@ const RegisterPage = () => {
               Bienvenido a Smilify
             </Typography>
             <Typography variant='body2'>Rellena los datos para obtener tu primer turno</Typography>
-            {Reserva ? (
+            {Reserva && !responseReserva ? (
               <Alert severity="error">Ya hay una reserva para esta Cedula</Alert>
             ) : null}
 

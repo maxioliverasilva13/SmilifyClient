@@ -227,6 +227,7 @@ const PacienteInfo = () => {
             />
             <ItemInfo keyItem="Correo" value={pacienteInfo?.correo} />
             <ItemInfo keyItem="Telefono" value={pacienteInfo?.telefono} />
+            <ItemInfo keyItem="Datos Clínicos" value={pacienteInfo?.datosClinicos} />
           </div>
           {/* <div className="w-[350px] h-auto flex flex-col items-start gap-2">
             <ItemInfo keyItem="T.C" value="44" />
@@ -244,7 +245,7 @@ const PacienteInfo = () => {
                 <FcCancel color="red" size={25} />
               )}
               <span>
-                {tieneAlta ? "Usuario Dado de alta" : "Usuario Dado de baja"}
+                {tieneAlta ? "Usuario Dado de alta" : "Usuario sin alta"}
               </span>
             </div>
             <span className="text-base text-[#514D59] font-normal max-w-[250px] ">
