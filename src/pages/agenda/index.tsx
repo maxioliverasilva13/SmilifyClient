@@ -21,6 +21,8 @@ import ConfirmationModal from "src/components/Modals/ConfirmationModal";
 import { useEffect, useState } from "react";
 import { Reserva } from "src/types/reserva";
 import ReservaInfoModal from "src/components/Modals/Reserva/ReservaInfoModal";
+import clsx from "clsx";
+import AgregarReservaModal from "src/components/AgregarReservaModal";
 
 const cols: any = [
   {
@@ -59,13 +61,13 @@ const Agenda = () => {
   });
 
   const [openModal, setOpenModal] = useState(false);
-  
+  const [openModalAgregarReserva, setOpenModalAgregarReserva] = useState(false);
+
+
   const [selectedReserva, setSelectedReserva] = useState<Reserva>();
 
-  const {
-    data: reservasToday,
-    isLoading: isReservasTodayLoading,
-  } = useGetReservasHoyQuery({});
+  const { data: reservasToday, isLoading: isReservasTodayLoading } =
+    useGetReservasHoyQuery({});
   const {
     data: reservasMonth,
     isLoading: isRMonthLoading,
@@ -104,7 +106,7 @@ const Agenda = () => {
       const handleOpenModal = (eventInfo: any) => {
         // con un if validar si la fecha de ESA reserva, es menor o mayor a la actual, para saber que datos mostrarle.
         setOpenModal(true);
-        setSelectedReserva(eventInfo.reserva as Reserva)
+        setSelectedReserva(eventInfo.reserva as Reserva);
       };
 
       return (
@@ -140,6 +142,10 @@ const Agenda = () => {
           title="Información de la Reserva"
         />
       )}
+                <AgregarReservaModal 
+            open={openModalAgregarReserva}
+            setOpen={setOpenModalAgregarReserva}
+          />
       <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto">
         <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-xl p-6 flex flex-col items-start justify-start">
           <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">
@@ -148,6 +154,18 @@ const Agenda = () => {
                 Consultas Hoy
               </p>
             </div>
+            <button
+              className={clsx(
+                "px-4 py-2 w-[190px] text-center items-center justify-center flex rounded-md shadow-md text-white",
+                "bg-[#84DCCC]"
+              )}
+              onClick={() => {
+                setOpenModalAgregarReserva(true);
+                // open modal here
+              }}
+            >
+              Agregar reserva
+            </button>
           </div>
           <ReservasTable
             cols={cols}
