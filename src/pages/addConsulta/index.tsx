@@ -401,7 +401,7 @@ const AddConsulta = () => {
 
         <div
           className={clsx(
-            "w-full flex flex-col overflow-hidden items-start justify-start gap-2 transition-all",
+            "w-full flex flex-col overflow-hidden items-start justify-start gap-4 transition-all",
             asignarCostoslab ? "h-auto py-5" : "h-0"
           )}
         >
@@ -458,6 +458,7 @@ const AddConsulta = () => {
                 name="entrega"
                 type="text"
                 variant="outlined"
+                label="Entrega"
                 className="w-full"
               />
             </FormControl>

@@ -31,6 +31,7 @@ import { ConsultaExtended } from "src/types/consulta";
 import appRoutes from "src/utils/appRoutes";
 import useGlobal from "src/hooks/useGlobal";
 import AddTratamientoModal from "src/components/AddTratamientoModal/AddTratamientoModal";
+import CustomDescripcion from "src/components/Odontograma/components/CustomDescripcion";
 
 interface ItemInfoProps {
   keyItem: string;
@@ -227,7 +228,7 @@ const PacienteInfo = () => {
             />
             <ItemInfo keyItem="Correo" value={pacienteInfo?.correo} />
             <ItemInfo keyItem="Telefono" value={pacienteInfo?.telefono} />
-            <ItemInfo keyItem="Datos Clínicos" value={pacienteInfo?.datosClinicos} />
+            <ItemInfo keyItem="Datos Clínicos" value={<CustomDescripcion text={pacienteInfo?.datosClinicos || "No tiene."}/>} />
           </div>
           {/* <div className="w-[350px] h-auto flex flex-col items-start gap-2">
             <ItemInfo keyItem="T.C" value="44" />
