@@ -28,6 +28,13 @@ const CheckAuthWrapper = ({children}: props) => {
         }
     }
 
+
+  useEffect(() => {
+    if (userInfoData) {
+      handleSetUserInfo(userInfoData);
+    }
+  }, [userInfoData]);
+
     useEffect(() => {
         if (!isLoading && !userInfo) {
             handleCheckUserTokenAndInfo();

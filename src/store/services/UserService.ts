@@ -41,6 +41,7 @@ export const UserService = createApi({
           body: { ...data},
         };
       },
+      invalidatesTags: ["UserInfo"],
       transformResponse(value) {
         const response = value;
         return response;

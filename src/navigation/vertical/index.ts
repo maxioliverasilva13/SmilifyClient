@@ -57,7 +57,7 @@ const navigation = (): VerticalNavItemsType => {
       icon: ToolTipPlus,
     },
     {
-      sectionTitle: 'Categorias Arancel'
+      sectionTitle: 'Prestaciones Arancel'
     },
     {
       title: 'Agregar',

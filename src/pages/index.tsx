@@ -36,13 +36,13 @@ const cols: any = [
 const Dashboard = () => {
   const { data: reservas, isLoading, refetch } = useGetReservasQuery({});
 
-  if (isLoading) {
-    return <GlobalSpinner />;
-  }
-
   useEffect(() => {
     refetch();
   }, [])
+  
+  if (isLoading) {
+    return <GlobalSpinner />;
+  }
 
   return (
     <ApexChartWrapper className="flex flex-col gap-7">

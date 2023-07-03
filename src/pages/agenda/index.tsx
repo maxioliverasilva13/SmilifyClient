@@ -63,11 +63,12 @@ const Agenda = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openModalAgregarReserva, setOpenModalAgregarReserva] = useState(false);
 
-
   const [selectedReserva, setSelectedReserva] = useState<Reserva>();
 
-  const { data: reservasToday, isLoading: isReservasTodayLoading } =
-    useGetReservasHoyQuery({});
+  const {
+    data: reservasToday,
+    isLoading: isReservasTodayLoading,
+  } = useGetReservasHoyQuery({});
   const {
     data: reservasMonth,
     isLoading: isRMonthLoading,
@@ -110,24 +111,22 @@ const Agenda = () => {
       };
 
       return (
-        <div>
-          <Calendar
-            localizer={localizer}
-            events={fechas}
-            defaultView="week"
-            step={30}
-            culture="es"
-            scrollToTime={moment().hour(8).toDate()}
-            messages={customTags}
-            onNavigate={handleNavigate}
-            // onDoubleClickEvent={(event) => {console.log(event)}}
-            onSelectEvent={(event: any) => {
-              handleOpenModal(event);
-              console.log(event);
-            }}
-            style={{ height: 600, width: 800 }}
-          />
-        </div>
+        <Calendar
+          localizer={localizer}
+          events={fechas}
+          defaultView="week"
+          step={30}
+          culture="es"
+          scrollToTime={moment().hour(8).toDate()}
+          messages={customTags}
+          onNavigate={handleNavigate}
+          // onDoubleClickEvent={(event) => {console.log(event)}}
+          onSelectEvent={(event: any) => {
+            handleOpenModal(event);
+            console.log(event);
+          }}
+          style={{ height: 600, width: "100%" }}
+        />
       );
     }
   };
@@ -142,10 +141,10 @@ const Agenda = () => {
           title="Información de la Reserva"
         />
       )}
-                <AgregarReservaModal 
-            open={openModalAgregarReserva}
-            setOpen={setOpenModalAgregarReserva}
-          />
+      <AgregarReservaModal
+        open={openModalAgregarReserva}
+        setOpen={setOpenModalAgregarReserva}
+      />
       <div className="w-full h-full flex flex-grow flex flex-row items-start justify-center max-h-full overflow-auto">
         <div className="w-full flex-grow h-auto bg-white rounded-lg shadow-xl p-6 flex flex-col items-start justify-start">
           <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">

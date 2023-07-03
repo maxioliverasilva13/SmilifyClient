@@ -407,10 +407,10 @@ const AddConsulta = () => {
         >
           <FormControl sx={{ width: "100%" }}>
             <InputLabel id="select-tratamientoLab">
-              Seleccionar prestacion
+              Seleccionar arancel
             </InputLabel>
             <Select
-              label="Seleccionar prestacion"
+              label="Seleccionar arancel"
               labelId="select-tratamientoLab"
               id="select-tratamientoLab"
               value={selectedArancelLab}
@@ -426,7 +426,7 @@ const AddConsulta = () => {
                 })
               ) : (
                 <MenuItem disabled value="">
-                  No hay prestaciones disponibles
+                  No hay aranceles disponibles
                 </MenuItem>
               )}
             </Select>
