@@ -52,7 +52,7 @@ export default function AddCategoriaModal({
         />
 
         <span className="text-gray-800 font-medium text-center">
-          Agregar categoria para los aranceles
+          Agregar prestación para los aranceles
         </span>
 
         {
@@ -88,7 +88,7 @@ export default function AddCategoriaModal({
           onClick={() => handleCreateCategoria()}
           className="shadow-md text-white font-semibold rounded-full px-4 py-2 bg-[#84DCCC]"
         >
-          Agregar categoria
+          Agregar Prestación
         </button>
       </div>
     </div>

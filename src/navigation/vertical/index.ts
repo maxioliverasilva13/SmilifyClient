@@ -4,13 +4,14 @@ import Table from 'mdi-material-ui/Table'
 import CubeOutline from 'mdi-material-ui/CubeOutline'
 import HomeOutline from 'mdi-material-ui/HomeOutline'
 import FormatLetterCase from 'mdi-material-ui/FormatLetterCase'
-import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
+import AccountCogOutline from 'mdi-material-ui/Calendar'
 import CreditCardOutline from 'mdi-material-ui/CreditCardOutline'
 import AccountPlusOutline from 'mdi-material-ui/AccountPlusOutline'
 import AlertCircleOutline from 'mdi-material-ui/AlertCircleOutline'
 import GoogleCirclesExtended from 'mdi-material-ui/GoogleCirclesExtended'
 import Users from 'mdi-material-ui/AccountGroup'
-import ToolTipPlus from 'mdi-material-ui/ToolTipPlus'
+import ToolTipPlus from 'mdi-material-ui/AccountPlus'
+import AddArancel from 'mdi-material-ui/PlusBox'
 import FormatListBulleted from 'mdi-material-ui/FormatListBulleted'
 
 
@@ -54,15 +55,15 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Agregar',
       path: '/Modal/ModalConsultaAgregar',
-      icon: ToolTipPlus,
+      icon: AddArancel,
     },
     {
       sectionTitle: 'Prestaciones Arancel'
     },
     {
-      title: 'Agregar',
+      title: 'Agregar Prestación',
       path: '/Categorias/AddCategoriaArancel',
-      icon: ToolTipPlus,
+      icon: AddArancel,
     },
   ]
 

@@ -222,10 +222,10 @@ const PacienteInfo = () => {
           <div className="w-[400px] h-auto flex flex-col items-start gap-2">
             <ItemInfo keyItem="Nombre" value={pacienteInfo?.nombre} />
             <ItemInfo keyItem="Apellido" value={pacienteInfo?.apellido} />
-            <ItemInfo
+            {/* <ItemInfo
               keyItem="Edad"
               value={getEdadbyFecha(pacienteInfo?.fechaDeNacimiento as number)}
-            />
+            /> */}
             <ItemInfo keyItem="Correo" value={pacienteInfo?.correo} />
             <ItemInfo keyItem="Telefono" value={pacienteInfo?.telefono} />
             <ItemInfo keyItem="Datos Clínicos" value={<CustomDescripcion text={pacienteInfo?.datosClinicos || "No tiene."}/>} />

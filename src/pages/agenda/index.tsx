@@ -150,7 +150,7 @@ const Agenda = () => {
           <div className="w-full flex flex-row items-center justify-start gap-2   pb-[60px]">
             <div className="w-full flex flex-row items-center max-w-full justify-between">
               <p className="text-[28px] font-semibold text-[#84DCCC]">
-                Consultas Hoy
+                Reservas para el día de hoy
               </p>
             </div>
             <button
